@@ -1,4 +1,3 @@
-<!-- ChainBadge.svelte -->
 <script lang="ts">
     export let chainId: number;
     export let showLabel: boolean = true;
@@ -12,23 +11,16 @@
   </div>
   
   <style>
-    .token-chain {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 12px;
-      font-size: 13px;
+    @import 'tailwindcss';
+    .token-chain{
+      @apply flex justify-between items-center mt-3;
     }
   
     .chain-label {
-      color: #a0a0a0;
+      @apply text-gray-500;
     }
   
     .chain-id {
-      background-color: #2a2a2a;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 500;
+      @apply bg-gray-800 px-2 py-0.5 rounded text-xs font-medium;
     }
   </style>
