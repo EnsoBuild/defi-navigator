@@ -1,2 +1,8 @@
-@import 'tailwindcss';
-@plugin '@tailwindcss/typography';
+@import "tailwindcss";
+
+/* 
+With tailwind 4, theme is defined in app.css file.
+*/
+@theme {
+    
+}
