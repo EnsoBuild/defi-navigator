@@ -57,7 +57,7 @@
       border-radius: 14px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       position: relative;
       overflow: hidden;
     }
@@ -89,7 +89,7 @@
     }
   
     .metric-value {
-      font-size: 24px;
+      font-size: 18px;
       font-weight: 700;
       margin: 6px 0;
       color: #f0f0f0;

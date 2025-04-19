@@ -2,23 +2,23 @@
 <script lang="ts">
   import { fade, scale } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
-  
+
   export let show: boolean = false;
   export let title: string | null = null;
-  export let maxWidth: string = "600px";
-  
+  export let maxWidth: string = '600px';
+
   const dispatch = createEventDispatcher();
-  
+
   function close() {
     dispatch('close');
   }
-  
+
   function handleBackdropClick(event: MouseEvent) {
     if (event.target === event.currentTarget) {
       close();
     }
   }
-  
+
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && show) {
       close();
@@ -41,17 +41,17 @@
       style="max-width: {maxWidth};"
       transition:scale={{ duration: 300, start: 0.95 }}
     >
-      {#if title}
-        <div class="modal-header">
+      <div class="modal-header">
+        <slot name="header">
           <h2 id="modal-title">{title}</h2>
-          <button class="close-button" on:click={close} aria-label="Close modal">×</button>
-        </div>
-      {/if}
-      
+        </slot>
+        <button class="close-button" on:click={close} aria-label="Close modal">×</button>
+      </div>
+
       <div class="modal-content">
         <slot />
       </div>
-      
+
       <div class="modal-footer">
         <slot name="footer">
           <button class="close-modal-button" on:click={close}>Close</button>
@@ -96,12 +96,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
+    /* position: sticky; */
     top: 0;
     background-color: #1a1a1a;
     z-index: 10;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
+    position: relative;
   }
 
   .modal-header h2 {

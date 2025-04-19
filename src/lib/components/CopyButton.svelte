@@ -2,7 +2,7 @@
 <script lang="ts">
     export let text: string;
     export let label: string = "Copy";
-    export let compact: boolean = false;
+    export let compact: boolean = true;
     export let small: boolean = false;
     
     let copied = false;
@@ -25,7 +25,24 @@
     aria-label={`Copy ${label}`}
   >
     {#if copied}
-      Copied!
+      {#if !compact}
+      {label}
+      {:else}
+      <!-- svg - check mark success  -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+      {/if}
     {:else if !compact}
       {label}
     {:else}

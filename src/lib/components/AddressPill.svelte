@@ -9,7 +9,7 @@
   
   <div class="address-container" class:small>
     <code class="address">{address}</code>
-    <CopyButton text={address} label={`Copy ${label}`} small={small} />
+    <CopyButton text={address} small={small} />
   </div>
   
   <style>

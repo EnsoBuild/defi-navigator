@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { Token } from '../types';
-  
+
   // Import our extracted components
   import Modal from './Modal.svelte';
   import TokenLogo from './TokenLogo.svelte';
@@ -33,54 +33,38 @@
   }
 </script>
 
-<Modal
-  show={showOverlay}
-  closeOnBackdropClick={true}
-  on:close={close}
-  width="max-w-2xl"
->
-  <div class="modal-header">
-    <div class="token-info">
-      <TokenLogo logoUri={token.logosUri?.[0]} symbol={token.symbol} size="md" />
+<Modal show={showOverlay} closeOnBackdropClick={true} on:close={close} width="max-w-2xl">
+  <div class="token-info" slot="header">
+    <TokenLogo logoUri={token.logosUri?.[0]} symbol={token.symbol} size="md" />
 
-      <div class="token-title">
-        <h2 id="modal-title">{token.name || 'Unknown Token'}</h2>
-        <div class="token-subtitle">
-          <span class="token-symbol">{token.symbol || 'Unknown'}</span>
-          <span class="chain-badge">Chain: {token.chainId}</span>
-        </div>
+    <div class="token-title">
+      <h2 id="modal-title">{token.name || 'Unknown Token'}</h2>
+      <div class="token-subtitle">
+        <span class="token-symbol">{token.symbol || 'Unknown'}</span>
+        <span class="chain-badge">Chain: {token.chainId}</span>
       </div>
     </div>
-
-    <button class="close-button" on:click={close} aria-label="Close details">
-      ×
-    </button>
   </div>
 
   <div class="modal-content">
     <!-- APY and TVL Section -->
     <div class="key-metrics">
       {#if token.apy !== null && token.apy !== undefined}
-        <MetricCard 
-          title="Annual Percentage Yield" 
-          value={token.apy} 
-          type="apy" 
-          subValues={
-            token.apyBase !== null && token.apyReward !== null ? 
-            [
-              { label: "Base", value: token.apyBase },
-              { label: "Reward", value: token.apyReward }
-            ] : []
-          }
+        <MetricCard
+          title="APY"
+          value={token.apy}
+          type="apy"
+          subValues={token.apyBase !== null && token.apyReward !== null
+            ? [
+                { label: 'Base', value: token.apyBase },
+                { label: 'Reward', value: token.apyReward }
+              ]
+            : []}
         />
       {/if}
 
       {#if token.tvl !== null && token.tvl !== undefined}
-        <MetricCard 
-          title="Total Value Locked" 
-          value={formatTVL(token.tvl)} 
-          type="tvl" 
-        />
+        <MetricCard title="TVL" value={formatTVL(token.tvl)} type="tvl" />
       {/if}
     </div>
 
@@ -118,10 +102,10 @@
     {/if}
   </div>
 
-  <div slot="footer">
-    <!-- <button class="close-modal-button" on:click={close}>Close</button>
+  <!-- <div slot="footer">
+    <button class="close-modal-button" on:click={close}>Close</button>
     
-      href={token.protocolSlug
+     <a href={token.protocolSlug
         ? `https://app.enso.finance/route?chainId=${token.chainId}&tokenOut=${token.address}`
         : `https://etherscan.io/token/${token.address}`}
       target="_blank"
@@ -129,8 +113,8 @@
       class="view-button"
     >
       {token.protocolSlug ? 'Trade on Enso' : 'View on Etherscan'}
-    </a> -->
-  </div>
+    </a>
+  </div> -->
 </Modal>
 
 <style>

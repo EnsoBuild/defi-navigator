@@ -4,5 +4,17 @@
 With tailwind 4, theme is defined in app.css file.
 */
 @theme {
+    /* Define your theme colors here */
+    --color-primary: #3490dc;
+    --color-secondary: #ffed4a;
+    --color-accent: #e3342f;
+    --color-background: #f8fafc;
+    --color-text: #2d3748;
     
+    /* Add more custom properties as needed */
+    --font-family-sans: 'Inter', sans-serif;
+    --font-family-serif: 'Merriweather', serif;
+    --font-family-mono: 'Fira Code', monospace;
+    
+    /* Add more custom properties as needed */
 }
