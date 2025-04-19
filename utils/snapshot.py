@@ -1,25 +1,107 @@
 #!/usr/bin/env python3
 # simple_file_snapshot.py
 # This script uses "### FILE: path/to/file.txt ###" markers to indicate the start of each file in the snapshot
+# It respects .gitignore patterns when creating the snapshot
 
 import os
-import json
+import fnmatch
 import argparse
 from pathlib import Path
+import re
+
+
+def parse_gitignore(gitignore_path):
+    """Parse .gitignore file and return a list of patterns"""
+    if not os.path.exists(gitignore_path):
+        return []
+        
+    patterns = []
+    with open(gitignore_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            # Remove comments and whitespace
+            line = line.split('#')[0].strip()
+            if line:
+                patterns.append(line)
+    
+    return patterns
+
+
+def should_ignore(file_path, base_path, ignore_patterns):
+    """Check if a file should be ignored based on gitignore patterns"""
+    if not ignore_patterns:
+        return False
+        
+    # Get the relative path for matching
+    rel_path = os.path.relpath(file_path, base_path)
+    
+    for pattern in ignore_patterns:
+        # Handle negation (!)
+        if pattern.startswith('!'):
+            # If the pattern is negated (explicitly included), skip this pattern
+            continue
+            
+        # Handle directory-specific patterns (ending with /)
+        is_dir_pattern = pattern.endswith('/')
+        if is_dir_pattern and not os.path.isdir(file_path):
+            continue
+            
+        # Remove trailing / for matching
+        if is_dir_pattern:
+            pattern = pattern[:-1]
+            
+        # Convert gitignore pattern to regex
+        # Replace ** with a placeholder
+        pattern = pattern.replace('**', '__DOUBLE_ASTERISK__')
+        
+        # Replace * with regex equivalent but not matching /
+        pattern = pattern.replace('*', '[^/]*')
+        
+        # Restore **
+        pattern = pattern.replace('__DOUBLE_ASTERISK__', '.*')
+        
+        # Leading / means match from root
+        if pattern.startswith('/'):
+            pattern = '^' + pattern[1:]
+        else:
+            # Match anywhere in path
+            pattern = '.*/' + pattern + '|^' + pattern
+            
+        # Match pattern
+        if re.match(pattern, rel_path):
+            return True
+            
+    return False
 
 
 def create_snapshot(source_path, output_path='./current.snapshot'):
-    """Merge all files from source_path into a single snapshot file"""
+    """Merge all files from source_path into a single snapshot file, respecting .gitignore"""
     
     snapshot = ["# This snapshot contains multiple files. Each file starts with '### FILE: path/to/file ###'"]
-    source_path = Path(source_path)
+    source_path = Path(source_path).resolve()
     
-    for root, _, files in os.walk(source_path):
+    # Parse .gitignore if it exists
+    gitignore_path = source_path / '.gitignore'
+    ignore_patterns = parse_gitignore(gitignore_path)
+    
+    for root, dirs, files in os.walk(source_path):
+        # Skip .git directory
+        if '.git' in dirs:
+            dirs.remove('.git')
+        
         for file in files:
-            file_path = Path(root) / file
+            file_path = os.path.join(root, file)
             
             # Skip the output file if it's in the source directory
-            if file_path == Path(output_path).resolve():
+            if os.path.abspath(file_path) == os.path.abspath(output_path):
+                continue
+                
+            # Skip .gitignore file
+            if file == '.gitignore':
+                continue
+                
+            # Check if file should be ignored
+            if should_ignore(file_path, source_path, ignore_patterns):
+                # print(f"Ignoring file based on .gitignore: {file_path}")
                 continue
                 
             try:
@@ -27,11 +109,11 @@ def create_snapshot(source_path, output_path='./current.snapshot'):
                     content = f.read()
                 
                 # Get relative path from source directory
-                rel_path = str(file_path.relative_to(source_path))
+                rel_path = os.path.relpath(file_path, source_path)
                 
                 # Store file with a comment header containing the path
                 snapshot.append(f"### FILE: {rel_path} ###\n{content}\n")
-            except:
+            except Exception as e:
                 print(f"Skipping binary or unreadable file: {file_path}")
     
     # Write all files to the snapshot
@@ -81,7 +163,7 @@ def extract_snapshot(snapshot_path, output_path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Simple file snapshot utility")
+    parser = argparse.ArgumentParser(description="Simple file snapshot utility that respects .gitignore")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
     
     # Create snapshot command
