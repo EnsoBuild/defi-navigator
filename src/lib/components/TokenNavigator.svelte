@@ -3,6 +3,7 @@
   import { fetchNetworks, fetchProtocols, fetchTokens } from '../api.ts';
   import type { Network, Protocol, Token } from '../types';
 
+  // Import our extracted components
   import NetworkSelect from '../components/NetworkSelect.svelte';
   import ProtocolSearch from '../components/ProtocolSearch.svelte';
   import TokenSearch from '../components/TokenSearch.svelte';
@@ -10,12 +11,15 @@
   import TokenCard from '../components/TokenCard.svelte';
   import TokenDetails from '../components/TokenDetails.svelte';
   import LoadingSpinner from '../components/LoadingSpinner.svelte';
+  import FilterBar from '../components/FilterBar.svelte';
+  import ResultStats from '../components/ResultsStats.svelte';
+  import EmptyState from '../components/EmptyState.svelte';
 
-  // State variables
+  // State variables (unchanged)
   let networks: Network[] = [];
   let protocols: Protocol[] = [];
   let tokens: Token[] = [];
-  let filteredTokens: Token[] = []; // Tokens after search filtering
+  let filteredTokens: Token[] = [];
   let isLoading: boolean = false;
   let error: string | null = null;
 
@@ -219,7 +223,7 @@
 
 <div class="token-explorer">
   <header class="explorer-header">
-    <h1>Enso <span class="accent">DeFi</span> Explorer</h1>
+    <h1>Enso <span class="accent">DeFi</span> Explorer!</h1>
 
     {#if error}
       <div class="error-message">
@@ -227,11 +231,11 @@
       </div>
     {/if}
 
-    <div class="filters">
+    <FilterBar>
       <ProtocolSearch {protocols} {selectedProtocol} on:protocolSelect={handleProtocolSelect} />
       <TokenSearch {tokens} on:searchResults={handleSearchResults} on:showHelp={toggleSearchHelp} />
       <NetworkSelect {networks} {selectedNetwork} on:networkChange={handleNetworkChange} />
-    </div>
+    </FilterBar>
   </header>
 
   {#if isLoading && tokens.length === 0}
@@ -239,24 +243,21 @@
       <LoadingSpinner size="32px" text="Loading tokens..." />
     </div>
   {:else if tokens.length === 0 && selectedProtocol}
-    <div class="no-results">
-      <p>No tokens found for the selected criteria</p>
-    </div>
+    <EmptyState
+      message="No tokens found"
+      description="No tokens found for the selected criteria"
+      icon="search"
+    />
   {:else if filteredTokens.length === 0 && searchQuery}
-    <div class="no-results">
-      <p>No tokens match your search criteria</p>
-      <button class="clear-search-button" on:click={() => (searchQuery = '')}>
-        Clear search
-      </button>
-    </div>
+    <EmptyState
+      message="No matching tokens"
+      description="No tokens match your search criteria"
+      actionText="Clear search"
+      icon="search"
+      on:action={() => (searchQuery = '')}
+    />
   {:else if tokens.length > 0}
-    <div class="results-info">
-      {#if searchQuery}
-        <span>Showing {filteredTokens.length} of {tokens.length} tokens</span>
-      {:else}
-        <span>Showing {tokens.length} tokens</span>
-      {/if}
-    </div>
+    <ResultStats totalCount={tokens.length} filteredCount={filteredTokens.length} {searchQuery} />
 
     <div class="tokens-grid">
       {#each filteredTokens as token (token.address + token.chainId)}
