@@ -1,8 +1,10 @@
-<!-- TokenCard.svelte (fixed version) -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
   import type { Token } from '../types';
+  import TokenLogo from './TokenLogo.svelte';
+  import APYBadge from './APYBadge.svelte';
+  import ChainBadge from './ChainBadge.svelte';
 
   export let token: Token;
 
@@ -26,13 +28,7 @@
   aria-label={`View details for ${token.name || 'Unknown Token'}`}
 >
   <div class="token-header">
-    <div class="token-logo">
-      {#if token.logosUri && token.logosUri.length > 0}
-        <img src={token.logosUri[0]} alt={token.symbol || 'Token'} />
-      {:else}
-        <div class="placeholder-logo">{token.symbol?.substring(0, 2) || '??'}</div>
-      {/if}
-    </div>
+    <TokenLogo logoUri={token.logosUri?.[0]} symbol={token.symbol} />
 
     <div class="token-info">
       <h3>{token.name || 'Unknown Token'}</h3>
@@ -40,17 +36,9 @@
     </div>
   </div>
 
-  {#if token.apy !== null && token.apy !== undefined}
-    <div class="token-apy" class:high-apy={token.apy > 5}>
-      <span>APY</span>
-      <span class="apy-value">{token.apy.toFixed(2)}%</span>
-    </div>
-  {/if}
-
-  <div class="token-chain">
-    <span class="chain-label">Chain</span>
-    <span class="chain-id">{token.chainId}</span>
-  </div>
+  <APYBadge apy={token.apy} />
+  
+  <ChainBadge chainId={token.chainId} />
 </div>
 
 <style>
@@ -101,36 +89,6 @@
     align-items: center;
   }
 
-  .token-logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #2a2a2a;
-    border: 1px solid #333;
-  }
-
-  .token-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .placeholder-logo {
-    font-weight: bold;
-    color: #f0f0f0;
-    font-size: 14px;
-    background-color: #444;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   .token-info h3 {
     margin: 0;
     font-size: 18px;
@@ -141,54 +99,6 @@
   .token-symbol {
     color: #a0a0a0;
     font-size: 14px;
-    font-weight: 500;
-  }
-
-  .token-apy {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    background-color: rgba(72, 187, 120, 0.1);
-    border-radius: 6px;
-    margin: 12px 0;
-    font-size: 14px;
-  }
-
-  .token-apy.high-apy {
-    background-color: rgba(255, 61, 135, 0.1);
-  }
-
-  .token-apy span {
-    color: #a0a0a0;
-  }
-
-  .apy-value {
-    font-weight: 600;
-    color: #4ade80 !important;
-  }
-
-  .high-apy .apy-value {
-    color: #ff3d87 !important;
-  }
-
-  .token-chain {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-    font-size: 13px;
-  }
-
-  .chain-label {
-    color: #a0a0a0;
-  }
-
-  .chain-id {
-    background-color: #2a2a2a;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 12px;
     font-weight: 500;
   }
 </style>
