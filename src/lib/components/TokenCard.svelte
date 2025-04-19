@@ -71,12 +71,6 @@
     opacity: 0;
   }
 
-  .token-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    border-color: #444;
-  }
-
   .token-card:hover::before {
     transform: scaleX(1);
     opacity: 1;
