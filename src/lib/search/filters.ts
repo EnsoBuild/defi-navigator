@@ -10,7 +10,8 @@ export enum FilterKey {
   PROJECT = 'project',
   TYPE = 'type',
   CHAIN_ID = 'chain',
-  PRIMARY_ADDRESS = "PRIMARY_ADDRESS"
+  PRIMARY_ADDRESS = "primaryAddress",
+  SYMBOL = "symbol"
 }
 
 export type FilterOperator = ':' | '>' | '<';

@@ -8,7 +8,9 @@
 
   import type { TokenParams } from '../../types/api';
   import ShareFiltersButton from '../core/ShareFiltersButton.svelte';
+  import SearchHelpDialog from './SearchHelpDialog.svelte';
 
+  let showSearchHelp = false;
   export let placeholder = 'Search tokens or filter (e.g. chain:1 apy>10)';
   export let protocols: Protocol[] = []; // Protocols data passed from parent
   export let projects: ProjectData[] = []; // Project data passed from parent
@@ -228,21 +230,40 @@
     }, 200);
   }
 
+  // Add this near the other event handlers
+  function handleGlobalKeydown(event: KeyboardEvent) {
+    if (event.key === '?' || event.key === 'Shift+?') {
+      event.preventDefault();
+      showHelp();
+    }
+  }
+
   // Initialize suggestions
   onMount(() => {
     searchInput = deserializeTokenParams(tokenParams);
     suggestions = generateSuggestions('');
+
+    window.addEventListener('keydown', handleGlobalKeydown);
+
+    // Don't forget to clean up
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeydown);
+    };
   });
+
+  function toggleSearchHelp() {
+    showSearchHelp = !showSearchHelp;
+  }
 </script>
 
 <div class="token-search relative">
   <div class="search-input-wrapper relative">
-    <div class="flex items-end gap-2 inset-0">
-      <ShareFiltersButton {tokenParams} moreRoom={true}/>
+    <div class="inset-0 flex items-end gap-2">
+      <ShareFiltersButton {tokenParams} moreRoom={true} />
       <div class="flex-1">
         <input
           type="text"
-          class="form-input pr-10 pt-[16.5px]! pb-2! font-mono"
+          class="form-input pt-[16.5px]! pr-10 pb-2! font-mono"
           {placeholder}
           bind:value={searchInput}
           bind:this={inputElement}
@@ -254,7 +275,9 @@
 
         <button
           class="text-text-tertiary hover:text-text-primary absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
-          on:click={showHelp}
+          on:click={() => {
+            showSearchHelp = true;
+          }}
           title="Search Help"
         >
           <svg
@@ -303,4 +326,11 @@
       </ul>
     </div>
   {/if}
+  <SearchHelpDialog
+    bind:show={showSearchHelp}
+    on:useExample={(p) => {
+      console.log('Use example', p);
+      searchInput = p.detail.query;
+    }}
+  />
 </div>

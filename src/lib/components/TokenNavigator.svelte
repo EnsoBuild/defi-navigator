@@ -36,7 +36,7 @@
   let error: string | null = null;
   let showOverlay = false;
   let selectedToken: TokenData | null = null;
-  let showSearchHelp = false;
+  
   let initialTokenParams: TokenParams = {};
 
   // Search and filter state
@@ -189,12 +189,7 @@
     selectedToken = null;
   }
 
-  function toggleSearchHelp() {
-    showSearchHelp = !showSearchHelp;
-  }
-
   // visual filter
-
   function handleFilter(event: CustomEvent<TokenParams>) {
     console.debug('Handling Filter', event);
     const params = event.detail;
@@ -254,7 +249,6 @@
           <TokenSearch
             on:input={handleSearchInput}
             on:searchResults={handleSearchResults}
-            on:showHelp={toggleSearchHelp}
             {protocols}
             {networks}
             {projects}
@@ -337,5 +331,5 @@
     <TokenDetails token={selectedToken} {showOverlay} on:close={closeOverlay} />
   {/if}
 
-  <SearchHelpDialog bind:show={showSearchHelp} />
+  
 </div>
