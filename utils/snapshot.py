@@ -151,7 +151,7 @@ def extract_snapshot(snapshot_path, output_path):
         file_content = part[file_path_end + 5:]  # +5 to skip " ###\n"
         
         # Create the file
-        full_path = output_dir / file_path
+        full_path = output_dir / file_path.strip()
         full_path.parent.mkdir(parents=True, exist_ok=True)
         
         with open(full_path, 'w', encoding='utf-8') as f:

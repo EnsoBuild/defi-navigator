@@ -1,35 +1,27 @@
 <script lang="ts">
-  import { getNetworks, getProjects, getProtocols, getTokenData } from '$lib/api/tokens';
-  import { onMount } from 'svelte';
-  import { parseFilterQuery } from '../search/parser';
-  import type { ProjectData, TokenData, TokenParams } from '../types/api';
+  import { onMount, onDestroy } from 'svelte';
+  import type { Token, TokenData, TokenParams } from '../../types';
+  import { getTokenData, getNetworks, getProtocols } from '../../api/tokens';
+  import { parseFilterQuery } from '../../search/parser';
 
-  import FilterBuilder from '$lib/filters/FilterBuilder.svelte';
-  import type { Network, Protocol, Token } from '$lib/types/api';
+  import TokenSearch from './TokenSearch.svelte';
+  import TokenCard from './TokenCard.svelte';
+  import TokenDetails from './TokenDetails.svelte';
+  import EmptyState from '../feedback/EmptyState.svelte';
+  import LoadingSpinner from '../feedback/LoadingSpinner.svelte';
+  import SkeletonLoader from '../feedback/SkeletonLoader.svelte';
+  import SearchHelpDialog from './SearchHelpDialog.svelte';
+  import ResultsStats from './ResultsStats.svelte';
+  import { writable, derived } from 'svelte/store';
   import { debounce } from '$lib/utils/debounce';
+  import type { Network, Protocol } from '$lib/types';
   import * as _ from 'lodash';
-  import { writable } from 'svelte/store';
-  import ResultsStats from './composite/ResultsStats.svelte';
-  import SearchHelpDialog from './composite/SearchHelpDialog.svelte';
-  import TokenCard from './composite/TokenCard.svelte';
-  import TokenDetails from './composite/TokenDetails.svelte';
-  import TokenSearch from './composite/TokenSearch.svelte';
-  import EmptyState from './feedback/EmptyState.svelte';
-  import LoadingSpinner from './feedback/LoadingSpinner.svelte';
-  import SkeletonLoader from './feedback/SkeletonLoader.svelte';
-
-  import { parseShareableUrl } from '$lib/search/url';
-
-  import Nav from './Nav.svelte';
-  import { page } from '$app/state';
-  import { fade } from 'svelte/transition';
-  import ShareFiltersButton from './core/ShareFiltersButton.svelte';
+  import { copyShareableUrlToClipboard, createShareableUrl } from '$lib/search/url';
+  import Button from '../core/Button.svelte';
 
   // State
-  let didMount = false;
-  let tokens: Token[] = [];
+  let tokens: TokenData[] = [];
   let protocols: Protocol[] = [];
-  let projects: ProjectData[] = [];
   let networks: Network[] = [];
   let isLoading = true;
   let isLoadingMore = false;
@@ -37,21 +29,19 @@
   let showOverlay = false;
   let selectedToken: TokenData | null = null;
   let showSearchHelp = false;
-  let initialTokenParams: TokenParams = {};
 
   // Search and filter state
   let searchQuery = writable('');
   let tokenParams = writable<TokenParams>({});
+  let selectedProtocol = '';
   let selectedNetwork = 1; // Default to Ethereum Mainnet
-  let filterView: 'cli' | 'ui' = 'ui'; // 'cli' or 'ui'
-  // Initialize and load tokens
 
+  // Initialize and load tokens
   onMount(() => {
     let observer: IntersectionObserver | null = null;
-    initialTokenParams = parseShareableUrl(page.url.toString());
-    tokenParams.set(initialTokenParams);
+
     // Start loading immediately, but don't await inside the function that's returned
-    Promise.all([loadTokens($tokenParams), loadProtocols(), loadNetworks(), loadProjects()])
+    Promise.all([loadTokens($tokenParams), loadProtocols(), loadNetworks()])
       .then(() => {
         // Set up the infinite scroll observer after data is loaded
         observer = new IntersectionObserver(handleIntersection, {
@@ -66,7 +56,7 @@
       .catch((err) => {
         error = `Failed to initialize: ${err.message}`;
       });
-    didMount = true;
+
     // Return the cleanup function synchronously
     return () => {
       if (observer) {
@@ -75,14 +65,11 @@
     };
   });
 
-  function setFilterView(view: 'cli' | 'ui') {
-    filterView = view;
-  }
-
   const loadTokens = debounce(async (params: TokenParams) => {
     try {
       isLoading = true;
       error = null;
+      console.debug("Load", $tokenParams, params)
       const result = await getTokenData(params);
       tokens = result;
     } catch (err) {
@@ -99,15 +86,6 @@
     } catch (err) {
       console.error('Failed to load protocols:', err);
       protocols = [];
-    }
-  }
-
-  async function loadProjects() {
-    try {
-      projects = await getProjects();
-    } catch (err) {
-      console.error('Failed to load protocols:', err);
-      projects = [];
     }
   }
 
@@ -163,13 +141,14 @@
       },
       filter: async (params) => {
         console.debug('Filter applied:', params);
-
+        
         // When we have a complete filter, update the token params and load tokens
-        if (_.isEqual(params, $tokenParams)) {
+        if(_.isEqual(params, $tokenParams)) {
           return;
+          
         }
         tokenParams.set(params);
-        console.debug('API filtering');
+        console.log('API filtering', params);
         loadTokens(params);
       }
     });
@@ -192,18 +171,6 @@
   function toggleSearchHelp() {
     showSearchHelp = !showSearchHelp;
   }
-
-  // visual filter
-
-  function handleFilter(event: CustomEvent<TokenParams>) {
-    console.debug('Handling Filter', event);
-    const params = event.detail;
-    console.debug('Filter params:', params);
-    if (!_.isEqual(params, $tokenParams)) {
-      tokenParams.set(params);
-    }
-    loadTokens(params);
-  }
 </script>
 
 <svelte:head>
@@ -214,9 +181,14 @@
   />
 </svelte:head>
 
-<div class="token-explorer mx-auto max-w-screen-xl px-8 pt-5">
-  <header class="explorer-header mb-7">
-    <Nav />
+<div class="token-explorer p10 mx-auto max-w-screen-xl">
+  <header class="explorer-header mb-7"
+    <h1 class="text-text-primary mb-5 text-2xl font-bold tracking-tight">
+      Enso <span
+        class="accent from-primary to-primary-hover bg-gradient-to-r bg-clip-text text-transparent"
+        >DeFi</span
+      > Explorer
+    </h1>
     {#if error}
       <div
         class="error-message bg-error-light text-error border-error-border mb-5 flex items-center gap-2.5 rounded-lg border p-3 px-4 before:text-base before:content-['⚠️']"
@@ -224,61 +196,16 @@
         {error}
       </div>
     {/if}
-    {#if didMount}
-      <div class="flex items-center justify-between">
-        <div class="mb-4 flex justify-end justify-items-stretch gap-3">
-          <div class="bg-bg-tertiary flex overflow-hidden rounded-md">
-            <button
-              class="btn {filterView === 'cli'
-                ? 'btn-primary'
-                : 'btn-ghost'} btn-sm no-translate rounded-none! border-0"
-              on:click={() => setFilterView('cli')}
-            >
-              CLI Filters
-            </button>
-            <button
-              class="btn {filterView === 'ui'
-                ? 'btn-primary'
-                : 'btn-ghost'} btn-sm no-translate rounded-none! border-0 px-4"
-              on:click={() => setFilterView('ui')}
-            >
-              UI Filters
-            </button>
-          </div>
-          <!-- <button class="btn btn-secondary btn-md no-translate" on:click={share}> Share </button> -->
-        </div>
-      </div>
-
-      <div>
-        {#if filterView === 'cli'}
-          <TokenSearch
-            on:input={handleSearchInput}
-            on:searchResults={handleSearchResults}
-            on:showHelp={toggleSearchHelp}
-            {protocols}
-            {networks}
-            {projects}
-            tokenParams={initialTokenParams}
-          />
-        {:else}
-          <FilterBuilder
-            {networks}
-            {protocols}
-            on:filter={handleFilter}
-            {projects}
-            tokenParams={initialTokenParams}
-          />
-        {/if}
-      </div>
-    {/if}
-
-    {#if error}
-      <div
-        class="error-message bg-error-light text-error border-error-border mb-5 flex items-center gap-2.5 rounded-lg border p-3 px-4 before:text-base before:content-['⚠️']"
-      >
-        {error}
-      </div>
-    {/if}
+    <!-- Uncomment these when implementation is complete -->
+    <!-- <ProtocolSearch {protocols} {selectedProtocol} on:protocolSelect={handleProtocolSelect} /> -->
+    <TokenSearch
+      on:input={handleSearchInput}
+      on:searchResults={handleSearchResults}
+      on:showHelp={toggleSearchHelp}
+      {protocols}
+      {networks}
+    />
+    <!-- <NetworkSelect {networks} {selectedNetwork} on:networkChange={handleNetworkChange} /> -->
   </header>
 
   {#if isLoading && tokens.length === 0}
@@ -299,9 +226,13 @@
         {/each}
       </div>
     </div>
-  {:else if tokens.length === 0 && !$tokenParams}
-    <EmptyState message="Start searching for tokens" description="" illustration="empty" />
-  {:else if tokens.length === 0 && $tokenParams}
+  {:else if tokens.length === 0 && selectedProtocol}
+    <EmptyState
+      message="No tokens found"
+      description="No tokens found for the selected criteria"
+      illustration="empty"
+    />
+  {:else if tokens.length === 0 && $searchQuery}
     <EmptyState
       message="No matching tokens"
       description="No tokens match your search criteria"

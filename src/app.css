@@ -1,20 +1,287 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* 
-With tailwind 4, theme is defined in app.css file.
+Theme configuration for Enso DeFi Explorer
 */
 @theme {
-    /* Define your theme colors here */
-    --color-primary: #3490dc;
-    --color-secondary: #ffed4a;
-    --color-accent: #e3342f;
-    --color-background: #f8fafc;
-    --color-text: #2d3748;
-    
-    /* Add more custom properties as needed */
-    --font-family-sans: 'Inter', sans-serif;
-    --font-family-serif: 'Merriweather', serif;
-    --font-family-mono: 'Fira Code', monospace;
-    
-    /* Add more custom properties as needed */
+  /* Color System */
+  --color-primary: #ff3d87; /* Pink accent color */
+  --color-primary-hover: #ff56a9;
+  --color-secondary: #ea3ef7; /* Bright pink accent */
+  --color-success: #4ade80;
+  --color-success-light: rgba(74, 222, 128, 0.08);
+  --color-success-border: rgba(74, 222, 128, 0.2);
+  --color-error: #fc8181;
+  --color-error-light: rgba(254, 178, 178, 0.1);
+  --color-error-border: rgba(254, 178, 178, 0.2);
+
+  /* Dark Mode Colors */
+  --color-bg-primary: #121212;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #1e1e1e;
+  /* --color-bg-component: #242424; */
+  --color-bg-elevated: #252525;
+  --color-bg-hover: #2a2a2a;
+
+  /* Border Colors */
+  --color-brdr: #121212;
+  --color-brdr-light: #2a2a2a;
+
+  /* Text Colors */
+  --color-text-primary: #f0f0f0;
+  --color-text-secondary: #d1d1d1;
+  --color-text-tertiary: #a0a0a0;
+
+  /* Shadows */
+  --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 15px rgba(234, 62, 247, 0.3);
+
+  /* Typography */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'Roboto Mono', monospace;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Spacing System */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* Animation */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 350ms;
+}
+
+body {
+  @apply bg-bg-primary text-text-primary m-0 p-0 font-sans;
+}
+
+/* Common Component Classes */
+/* Common Component Classes */
+.btn {
+  @apply inline-flex cursor-pointer items-center justify-center rounded-md border-none font-medium transition-all;
+}
+
+.btn-primary {
+  @apply bg-primary text-white opacity-80;
+}
+
+.btn-primary:hover:not(:disabled) {
+  @apply -translate-y-0.5 opacity-90 shadow-glow;
+}
+
+.btn-secondary {
+  @apply bg-bg-secondary border border-brdr-light text-text-primary transition-colors;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  @apply border-secondary bg-bg-hover /*-translate-y-0.5*/ shadow-md;
+}
+
+.btn.no-translate:hover{
+  @apply translate-y-0;
+}
+
+.btn-ghost {
+  @apply text-text-tertiary bg-transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  @apply text-text-primary bg-bg-hover;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs;
+}
+
+.btn-md {
+  @apply px-4 py-2.5 text-sm;
+}
+
+.btn-lg {
+  @apply px-5 py-3 text-base;
+}
+
+.card {
+  @apply border-brdr bg-bg-tertiary relative overflow-hidden rounded-md shadow-sm;
+}
+
+.card-interactive {
+  @apply relative cursor-pointer transition-all;
+}
+
+.card-interactive::before {
+  content: '';
+  @apply from-primary to-primary-hover absolute bottom-0 right-0 left-0 h-0.75 origin-left scale-x-0 bg-gradient-to-r opacity-0 transition-transform;
+}
+
+.card-interactive:hover {
+  @apply border-brdr-light -translate-y-1 shadow-md;
+}
+
+.card-interactive:hover::before {
+  @apply scale-x-100 opacity-100;
+}
+
+.form-input {
+  @apply border-brdr bg-bg-tertiary text-text-primary w-full rounded-md border px-4 py-3 text-sm transition-colors;
+}
+
+.form-input:focus {
+  @apply border-primary /*shadow-outline-primary*/ outline-none;
+}
+
+.shadow-outline-primary {
+  box-shadow: 0 0 0 2px rgba(255, 61, 135, 0.2);
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  @apply rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-primary {
+  @apply border-primary/20 border-t-primary border-2;
+}
+
+.spinner-secondary {
+  @apply border-secondary/20 border-t-secondary border-2;
+}
+
+/* Custom gradients */
+.gradient-pink {
+  @apply from-primary to-primary-hover bg-gradient-to-r;
+}
+
+.gradient-green {
+  @apply from-success bg-gradient-to-r to-green-400;
+}
+
+.gradient-blue {
+  @apply bg-gradient-to-r from-blue-400 to-blue-500;
+}
+
+/* Custom scroll bar for Webkit browsers */
+.scrollbar-thin::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  @apply rounded;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-secondary rounded;
+}
+
+/* Component specific classes */
+.token-search {
+  /* For semantic class names while using Tailwind */
+}
+
+.protocol-search {
+  /* For semantic class names while using Tailwind */
+}
+
+.token-explorer {
+  /* For semantic class names while using Tailwind */
+}
+
+.explorer-header {
+  /* For semantic class names while using Tailwind */
+}
+
+.tokens-grid {
+  /* For semantic class names while using Tailwind */
+}
+
+/* Custom styles that cannot be easily replaced with utilities */
+.border-l-3 {
+  border-left-width: 3px;
+}
+
+.h-0.75 {
+  height: 3px;
+}
+
+.py-15 {
+  padding-top: 3.75rem;
+  padding-bottom: 3.75rem;
+}
+
+.w-4.5 {
+  width: 1.125rem;
+}
+
+.h-4.5 {
+  height: 1.125rem;
+}
+
+/* Animation classes */
+.transition-all-fast {
+  @apply transition-all duration-150 ease-in-out;
+}
+
+.transition-all-normal {
+  @apply transition-all duration-250 ease-in-out;
+}
+
+.transition-all-slow {
+  @apply transition-all duration-350 ease-in-out;
+}
+
+.hover-lift {
+  @apply transition-transform hover:-translate-y-1;
+}
+
+.hover-dip {
+  @apply transition-transform hover:translate-y-1;
+}
+
+.hover-glow {
+  @apply hover:shadow-glow transition-shadow;
+}
+
+.glow {
+  @apply shadow-glow
+}
+
+.hover-scale {
+  @apply transition-transform hover:scale-110;
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  @apply from-bg-tertiary via-bg-hover to-bg-tertiary /*bg-200%*/ /*animate-shimmer*/ rounded bg-gradient-to-r;
+  animation: shimmer 1.5s infinite;
 }

@@ -2,6 +2,7 @@
   import TokenNavigator from "$lib/components/TokenNavigator.svelte";
 </script>
 
-<div>
+<div class="min-h-screen bg-bg-primary">
   <TokenNavigator/>
 </div>
+
