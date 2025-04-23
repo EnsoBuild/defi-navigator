@@ -1,8 +1,17 @@
 <script lang="ts">
-  export let logoUri: string | null = null;
-  export let symbol: string | null = null;
-  export let size: 'xs' | 'sm' | 'md' | 'lg' = 'md';
-  export let fallbackBg: 'gradient' | 'solid' = 'solid';
+  interface Props {
+    logoUri?: string | null;
+    symbol?: string | null;
+    size?: 'xs' | 'sm' | 'md' | 'lg';
+    fallbackBg?: 'gradient' | 'solid';
+  }
+
+  let {
+    logoUri = null,
+    symbol = null,
+    size = 'md',
+    fallbackBg = 'solid'
+  }: Props = $props();
   
   const sizeMap = {
     xs: 'w-5 h-5 text-2xs',
@@ -12,12 +21,12 @@
   };
   
   // Format symbol for fallback display
-  $: displaySymbol = symbol ? 
+  let displaySymbol = $derived(symbol ? 
     symbol.substring(0, 2).toUpperCase() : 
-    '??';
+    '??');
   
   // Handle image loading error
-  let hasError = false;
+  let hasError = $state(false);
   function handleError() {
     hasError = true;
   }
@@ -29,7 +38,7 @@
       src={logoUri} 
       alt={symbol || 'Token'} 
       class="w-full h-full object-cover"
-      on:error={handleError}
+      onerror={handleError}
     />
   {:else}
     <div class="font-bold text-text-primary w-full h-full flex items-center justify-center">

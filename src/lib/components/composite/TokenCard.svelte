@@ -6,8 +6,12 @@
   import ChainBadge from './ChainBadge.svelte';
   import TokenLogo from './TokenLogo.svelte';
 
-  export let token: Token;
-  export let hoverEffect: 'lift' | 'glow' | 'scale' = 'lift';
+  interface Props {
+    token: Token;
+    hoverEffect?: 'lift' | 'glow' | 'scale';
+  }
+
+  let { token, hoverEffect = 'lift' }: Props = $props();
 
   // Use Svelte's event dispatcher instead of DOM events
   const dispatch = createEventDispatcher();
@@ -18,7 +22,7 @@
   }
 
   // Determine if APY should be highlighted
-  $: hasHighAPY = token.apy !== null && token.apy !== undefined && token.apy > 5;
+  let hasHighAPY = $derived(token.apy !== null && token.apy !== undefined && token.apy > 5);
 
   // Format TVL with appropriate suffix (K, M, B)
   function formatTVL(value: number): string {

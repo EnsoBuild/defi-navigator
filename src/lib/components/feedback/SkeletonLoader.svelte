@@ -1,9 +1,19 @@
 <script lang="ts">
-  export let type: 'card' | 'text' | 'circle' | 'avatar' | 'custom' = 'text';
-  export let width: string = 'auto';
-  export let height: string = 'auto';
-  export let count: number = 1;
-  export let rounded: boolean = false;
+  interface Props {
+    type?: 'card' | 'text' | 'circle' | 'avatar' | 'custom';
+    width?: string;
+    height?: string;
+    count?: number;
+    rounded?: boolean;
+  }
+
+  let {
+    type = 'text',
+    width = 'auto',
+    height = 'auto',
+    count = 1,
+    rounded = false
+  }: Props = $props();
 </script>
 
 {#if type === 'card'}

@@ -4,9 +4,9 @@
   import Nav from '$lib/components/Nav.svelte';
   import type { Protocol } from '$lib/types/api';
 
-  let protocols: Protocol[] = [];
-  let loading = true;
-  let error: string | null = null;
+  let protocols: Protocol[] = $state([]);
+  let loading = $state(true);
+  let error: string | null = $state(null);
 
   onMount(async () => {
     try {
@@ -34,7 +34,7 @@
     {:else if error}
       <div class="card border-error-border bg-error-light p-6">
         <p class="text-error">Error: {error}</p>
-        <button class="btn btn-primary mt-4" on:click={() => window.location.reload()}>
+        <button class="btn btn-primary mt-4" onclick={() => window.location.reload()}>
           Try Again
         </button>
       </div>

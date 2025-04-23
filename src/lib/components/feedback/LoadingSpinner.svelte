@@ -1,8 +1,17 @@
 <script lang="ts">
-  export let size: string = "24px";
-  export let borderWidth: string = "3px";
-  export let text: string | null = null;
-  export let variant: 'primary' | 'secondary' = 'primary';
+  interface Props {
+    size?: string;
+    borderWidth?: string;
+    text?: string | null;
+    variant?: 'primary' | 'secondary';
+  }
+
+  let {
+    size = "24px",
+    borderWidth = "3px",
+    text = null,
+    variant = 'primary'
+  }: Props = $props();
 </script>
 
 <div class="flex flex-col items-center justify-center gap-3">

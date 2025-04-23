@@ -2,11 +2,21 @@
   import Button from '../core/Button.svelte';
   import { createEventDispatcher } from 'svelte';
   
-  export let message: string = 'No results found';
-  export let description: string = '';
-  export let actionText: string = '';
-  export let icon: 'search' | 'warning' | 'info' | 'empty' = 'search';
-  export let illustration: 'none' | 'no-results' | 'empty' | 'error' = 'none';
+  interface Props {
+    message?: string;
+    description?: string;
+    actionText?: string;
+    icon?: 'search' | 'warning' | 'info' | 'empty';
+    illustration?: 'none' | 'no-results' | 'empty' | 'error';
+  }
+
+  let {
+    message = 'No results found',
+    description = '',
+    actionText = '',
+    icon = 'search',
+    illustration = 'none'
+  }: Props = $props();
   
   const dispatch = createEventDispatcher();
   

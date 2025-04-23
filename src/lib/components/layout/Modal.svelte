@@ -3,12 +3,29 @@
   import { createEventDispatcher } from 'svelte';
   import Button from '../core/Button.svelte';
 
-  export let show: boolean = false;
-  export let title: string | null = null;
-  export let maxWidth: string = '600px';
-  export let closeOnBackdropClick: boolean = true;
-  export let showClose: boolean = true;
-  export let closeButtonText: string = 'Close';
+  interface Props {
+    show?: boolean;
+    title?: string | null;
+    maxWidth?: string;
+    closeOnBackdropClick?: boolean;
+    showClose?: boolean;
+    closeButtonText?: string;
+    header?: import('svelte').Snippet;
+    children?: import('svelte').Snippet;
+    footer?: import('svelte').Snippet;
+  }
+
+  let {
+    show = false,
+    title = null,
+    maxWidth = '600px',
+    closeOnBackdropClick = true,
+    showClose = true,
+    closeButtonText = 'Close',
+    header,
+    children,
+    footer
+  }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -35,7 +52,7 @@
   <div
     class="fixed inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-sm"
     transition:fade={{ duration: 200 }}
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     role="dialog"
     aria-modal="true"
   >
@@ -45,26 +62,26 @@
       transition:scale={{ duration: 300, start: 0.95 }}
     >
       <div class="py-5 px-6 border-b border-brdr-light flex items-start justify-between bg-bg-secondary sticky top-0 z-10 rounded-t-xl relative">
-        <slot name="header">
+        {#if header}{@render header()}{:else}
           <h2 id="modal-title" class="m-0 text-xl text-text-primary font-semibold">{title}</h2>
-        </slot>
+        {/if}
         {#if showClose}
           <button 
             class="bg-transparent border-none text-text-tertiary text-2xl cursor-pointer leading-none p-0 transition-colors hover:text-text-primary hover-scale" 
-            on:click={close} 
+            onclick={close} 
             aria-label="Close modal"
           >×</button>
         {/if}
       </div>
 
       <div class="p-6 flex-1 overflow-y-auto">
-        <slot />
+        {@render children?.()}
       </div>
 
       <div class="p-4 px-6 border-t border-brdr-light flex justify-between sticky bottom-0 bg-bg-secondary rounded-b-xl">
-        <slot name="footer">
+        {#if footer}{@render footer()}{:else}
           <Button variant="secondary" on:click={close}>{closeButtonText}</Button>
-        </slot>
+        {/if}
       </div>
     </div>
   </div>

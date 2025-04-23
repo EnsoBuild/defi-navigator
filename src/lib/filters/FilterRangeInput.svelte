@@ -1,17 +1,22 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     
+    
+  interface Props {
     // Props
-    export let type: 'apy' | 'tvl' = 'apy';
-    export let fromValue = '';
-    export let toValue = '';
+    type?: 'apy' | 'tvl';
+    fromValue?: string;
+    toValue?: string;
+  }
+
+  let { type = 'apy', fromValue = $bindable(''), toValue = $bindable('') }: Props = $props();
     
     const dispatch = createEventDispatcher();
     
     // Labels and placeholders based on type
-    $: label = type === 'apy' ? 'APY Range (%)' : 'TVL Range ($)';
-    $: fromPlaceholder = type === 'apy' ? 'Min %' : 'Min $';
-    $: toPlaceholder = type === 'apy' ? 'Max %' : 'Max $';
+    let label = $derived(type === 'apy' ? 'APY Range (%)' : 'TVL Range ($)');
+    let fromPlaceholder = $derived(type === 'apy' ? 'Min %' : 'Min $');
+    let toPlaceholder = $derived(type === 'apy' ? 'Max %' : 'Max $');
     
     // Update values and dispatch change
     function updateValues() {
@@ -28,7 +33,7 @@
           type="number"
           bind:value={fromValue}
           placeholder={fromPlaceholder}
-          on:input={updateValues}
+          oninput={updateValues}
           class="form-input w-full"
           min="0"
         />
@@ -41,7 +46,7 @@
           type="number"
           bind:value={toValue}
           placeholder={toPlaceholder}
-          on:input={updateValues}
+          oninput={updateValues}
           class="form-input w-full"
           min="0"
         />

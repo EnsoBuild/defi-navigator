@@ -1,12 +1,28 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { fade } from 'svelte/transition';
   
-  export let interactive: boolean = false;
   
-  export let highlightBorder: boolean = false;
 
-  export let animate: boolean = true;
-  export let hoverEffect: 'none' | 'lift' | 'glow' | 'scale' = 'none';
+  interface Props {
+    interactive?: boolean;
+    highlightBorder?: boolean;
+    animate?: boolean;
+    hoverEffect?: 'none' | 'lift' | 'glow' | 'scale';
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
+
+  let {
+    interactive = false,
+    highlightBorder = false,
+    animate = true,
+    hoverEffect = 'none',
+    children,
+    ...rest
+  }: Props = $props();
 
 
   const hoverClasses = {
@@ -22,10 +38,10 @@
   {hoverClasses[hoverEffect]}
   {highlightBorder ? 'border-l-3 border-l-secondary' : ''}"
   in:fade={{ duration: animate ? 300 : 0 }}
-  on:click
-  on:keydown
-  {...$$restProps}
+  onclick={bubble('click')}
+  onkeydown={bubble('keydown')}
+  {...rest}
 >
-  <slot />
+  {@render children?.()}
 </div>
 

@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { run, createBubbler, stopPropagation } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { FilterKey, type FilterValue } from '../types';
   import FilterInput from './FilterInput.svelte';
@@ -7,28 +10,38 @@
 
   import type { Network, ProjectData, Protocol } from '$lib/types/api';
 
-  // Props
-  export let networks: Network[] = [];
-  export let protocols: Protocol[] = [];
-  export let projects: ProjectData[] = [];
-  export let onDismiss: () => void = () => {}; // New prop for dismissing dropdown
+  
+  interface Props {
+    // Props
+    networks?: Network[];
+    protocols?: Protocol[];
+    projects?: ProjectData[];
+    onDismiss?: () => void; // New prop for dismissing dropdown
+  }
+
+  let {
+    networks = [],
+    protocols = [],
+    projects = [],
+    onDismiss = () => {}
+  }: Props = $props();
 
   // Component state
-  let selectedFilter: string | null = null;
-  let filterValue: FilterValue = '';
+  let selectedFilter: string | null = $state(null);
+  let filterValue: FilterValue = $state('');
   let filterValueSelected: FilterValue = '';
-  let showSuggestions = false;
-  let suggestions: any[] = [];
-  let searchQuery = '';
-  let filteredOptions: FilterKeyPres[] = [];
+  let showSuggestions = $state(false);
+  let suggestions: any[] = $state([]);
+  let searchQuery = $state('');
+  let filteredOptions: FilterKeyPres[] = $state([]);
   type FilterKeyPres = {
     key: FilterKey;
     description: string;
   };
 
   // Keyboard navigation state
-  let activeOptionIndex = -1;
-  let dropdownElement: HTMLElement;
+  let activeOptionIndex = $state(-1);
+  let dropdownElement: HTMLElement = $state();
 
   const dispatch = createEventDispatcher();
 
@@ -39,18 +52,20 @@
   }));
 
   // Keep filter options updated when search changes
-  $: filteredOptions = filterOptions.filter(
-    (option) =>
-      option.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      option.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  run(() => {
+    filteredOptions = filterOptions.filter(
+      (option) =>
+        option.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        option.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
 
   // Reset active index when filtered options change
-  $: {
+  run(() => {
     if (filteredOptions) {
       activeOptionIndex = filteredOptions.length > 0 ? 0 : -1;
     }
-  }
+  });
 
   onMount(() => {
     // Focus the search input when component mounts
@@ -309,14 +324,14 @@
 
 <div
   class="filter-dropdown card shadow-lg"
-  on:wheel|stopPropagation
-  on:keydown={handleKeydown}
+  onwheel={stopPropagation(bubble('wheel'))}
+  onkeydown={handleKeydown}
   bind:this={dropdownElement}
   tabindex="-1"
 >
   <div class="bg-bg-tertiary sticky top-0 z-10 mb-2 flex items-center justify-between p-4 pb-2">
     <h3 class="text-lg font-medium">Filter Options</h3>
-    <button class="btn btn-ghost p-1" on:click={closeDropdown}>
+    <button class="btn btn-ghost p-1" onclick={closeDropdown}>
       <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M18 6L6 18M6 6L18 18"
@@ -350,12 +365,12 @@
           placeholder="Search filters..."
           class="form-input py-2 pl-10!"
           bind:value={searchQuery}
-          on:input={handleSearchChange}
+          oninput={handleSearchChange}
         />
         {#if searchQuery}
           <button
             class="text-text-tertiary hover:text-text-primary absolute inset-y-0 right-0 flex items-center pr-3"
-            on:click={() => (searchQuery = '')}
+            onclick={() => (searchQuery = '')}
           >
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -382,8 +397,8 @@
               activeOptionIndex
                 ? 'border-primary bg-bg-hover from-primary/10 to-secondary/5 bg-gradient-to-r'
                 : ''}"
-              on:click={() => selectFilter(option.key)}
-              on:mouseenter={() => (activeOptionIndex = index)}
+              onclick={() => selectFilter(option.key)}
+              onmouseenter={() => (activeOptionIndex = index)}
               aria-selected={index === activeOptionIndex}
             >
               <div class="text-primary mr-2">
@@ -406,7 +421,7 @@
     <!-- Filter value input -->
     <div class="px-0 pb-4">
       <div class="mb-2 flex items-center">
-        <button class="btn btn-ghost mr-2 p-1" on:click={() => selectFilter(null)}>
+        <button class="btn btn-ghost mr-2 p-1" onclick={() => selectFilter(null)}>
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M15 18L9 12L15 6"
@@ -447,7 +462,7 @@
       {/if}
 
       <div class="mt-4">
-        <button class="btn btn-primary w-full" on:click={addFilter} disabled={!filterValue}>
+        <button class="btn btn-primary w-full" onclick={addFilter} disabled={!filterValue}>
           Add Filter
         </button>
       </div>

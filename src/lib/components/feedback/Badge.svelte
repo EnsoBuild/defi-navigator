@@ -1,12 +1,22 @@
 <script lang="ts">
-  export let type: 'apy' | 'tvl' | 'default' | 'chain' = 'default';
-  export let variant: 'normal' | 'success' | 'highlight' | 'info' = 'normal';
-  export let value: string | number;
-  export let label: string | null = null;
-  export let size: 'sm' | 'md' = 'md';
+  interface Props {
+    type?: 'apy' | 'tvl' | 'default' | 'chain';
+    variant?: 'normal' | 'success' | 'highlight' | 'info';
+    value: string | number;
+    label?: string | null;
+    size?: 'sm' | 'md';
+  }
+
+  let {
+    type = 'default',
+    variant = 'normal',
+    value,
+    label = null,
+    size = 'md'
+  }: Props = $props();
   
   // Determine appropriate CSS classes based on type and variant
-  $: typeClass = (() => {
+  let typeClass = $derived((() => {
     if (type === 'apy') {
       if (variant === 'highlight') return 'bg-primary/10 border-primary/20';
       return 'bg-success-light border-success-border';
@@ -14,28 +24,28 @@
     if (type === 'tvl') return 'bg-blue-500/10 border-blue-500/20';
     if (type === 'chain') return 'bg-bg-hover';
     return 'bg-white/5 border-white/10';
-  })();
+  })());
   
   // Get appropriate value class for text gradient
-  $: valueClass = (() => {
+  let valueClass = $derived((() => {
     if (type === 'apy') {
       if (variant === 'highlight') return 'bg-gradient-to-r from-primary to-primary-hover';
       return 'bg-gradient-to-r from-success to-green-400';
     }
     if (type === 'tvl') return 'bg-gradient-to-r from-blue-400 to-blue-500';
     return '';
-  })();
+  })());
   
   // Format value based on type
-  $: formattedValue = (() => {
+  let formattedValue = $derived((() => {
     if (type === 'apy' && typeof value === 'number') {
       return `${value.toFixed(2)}%`;
     }
     return value;
-  })();
+  })());
   
   // Size classes
-  $: sizeClass = size === 'sm' ? 'py-1 px-2 text-xs' : 'py-2 px-3 text-sm';
+  let sizeClass = $derived(size === 'sm' ? 'py-1 px-2 text-xs' : 'py-2 px-3 text-sm');
 </script>
 
 <div class={`rounded-md ${typeClass} ${sizeClass} inline-flex items-center`}>

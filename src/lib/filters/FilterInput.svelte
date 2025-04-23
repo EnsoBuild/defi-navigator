@@ -1,9 +1,13 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     
-    export let value = '';
-    export let placeholder = 'Enter value...';
-    export let type = 'text';
+  interface Props {
+    value?: string;
+    placeholder?: string;
+    type?: string;
+  }
+
+  let { value = '', placeholder = 'Enter value...', type = 'text' }: Props = $props();
     
     const dispatch = createEventDispatcher();
     
@@ -16,6 +20,6 @@
     {type}
     {placeholder}
     {value}
-    on:input={handleInput}
+    oninput={handleInput}
     class="form-input w-full"
   />

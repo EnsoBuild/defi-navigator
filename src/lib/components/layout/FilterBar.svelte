@@ -1,6 +1,11 @@
 <script lang="ts">
-  export let direction: 'row' | 'column' = 'row';
-  export let spacing: 'sm' | 'md' | 'lg' = 'md';
+  interface Props {
+    direction?: 'row' | 'column';
+    spacing?: 'sm' | 'md' | 'lg';
+    children?: import('svelte').Snippet;
+  }
+
+  let { direction = 'row', spacing = 'md', children }: Props = $props();
   
   const spacingClasses = {
     sm: 'gap-3',
@@ -10,7 +15,7 @@
 </script>
 
 <div class={`filter-bar flex ${direction === 'column' ? 'flex-col items-stretch' : 'items-end w-full'} ${spacingClasses[spacing]} mb-5`}>
-  <slot></slot>
+  {@render children?.()}
 </div>
 
 <style>

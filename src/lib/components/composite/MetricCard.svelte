@@ -1,23 +1,33 @@
 <script lang="ts">
-  export let title: string;
-  export let value: string | number;
-  export let type: 'apy' | 'tvl' | 'default' = 'default';
-  export let subValues: {label: string, value: string | number}[] = [];
-  export let highlightThreshold: number = 5; // For APY
+  interface Props {
+    title: string;
+    value: string | number;
+    type?: 'apy' | 'tvl' | 'default';
+    subValues?: {label: string, value: string | number}[];
+    highlightThreshold?: number; // For APY
+  }
+
+  let {
+    title,
+    value,
+    type = 'default',
+    subValues = [],
+    highlightThreshold = 5
+  }: Props = $props();
   
   // Determine if high APY for styling
-  $: isHighAPY = type === 'apy' && typeof value === 'number' && value > highlightThreshold;
+  let isHighAPY = $derived(type === 'apy' && typeof value === 'number' && value > highlightThreshold);
   
   // Simplified type classes
-  $: cardClass = type === 'apy' 
+  let cardClass = $derived(type === 'apy' 
     ? isHighAPY ? 'bg-pink-500/10' : 'bg-success-light' 
-    : type === 'tvl' ? 'bg-blue-500/10' : 'bg-bg-secondary';
+    : type === 'tvl' ? 'bg-blue-500/10' : 'bg-bg-secondary');
     
   // Simplified text gradient
-  $: textClass = type === 'apy'
+  let textClass = $derived(type === 'apy'
     ? isHighAPY ? 'text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary' 
     : 'text-success'
-    : type === 'tvl' ? 'text-blue-400' : 'text-text-primary';
+    : type === 'tvl' ? 'text-blue-400' : 'text-text-primary');
 </script>
 
 <div class={`p-4 rounded-lg ${cardClass} border border-brdr-light shadow-sm hover:shadow-md transition-all`}>

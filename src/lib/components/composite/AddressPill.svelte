@@ -1,14 +1,23 @@
 <script lang="ts">
   import CopyButton from './CopyButton.svelte';
   
-  export let address: string;
-  export let small: boolean = false;
-  export let label: string = "address";
-  export let truncate: boolean = false;
+  interface Props {
+    address: string;
+    small?: boolean;
+    label?: string;
+    truncate?: boolean;
+  }
+
+  let {
+    address,
+    small = false,
+    label = "address",
+    truncate = false
+  }: Props = $props();
   
-  $: displayAddress = truncate ? 
+  let displayAddress = $derived(truncate ? 
     `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : 
-    address;
+    address);
 </script>
 
 <div class={`address-pill flex bg-bg-secondary rounded-md border border-brdr-light overflow-hidden items-center ${small ? 'text-xs' : 'text-sm'}`}>

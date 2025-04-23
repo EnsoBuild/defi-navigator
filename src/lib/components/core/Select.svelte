@@ -2,15 +2,26 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   
-  export let items: Array<{ id: string | number, name: string, icon?: string }> = [];
-  export let selectedItemId: string | number | null = null;
-  export let placeholder: string = 'Select an item';
-  export let label: string = '';
-  export let error: string = '';
-  export let disabled: boolean = false;
+  interface Props {
+    items?: Array<{ id: string | number, name: string, icon?: string }>;
+    selectedItemId?: string | number | null;
+    placeholder?: string;
+    label?: string;
+    error?: string;
+    disabled?: boolean;
+  }
+
+  let {
+    items = [],
+    selectedItemId = $bindable(null),
+    placeholder = 'Select an item',
+    label = '',
+    error = '',
+    disabled = false
+  }: Props = $props();
   
-  let isOpen: boolean = false;
-  let selectedItem = items.find(item => item.id === selectedItemId);
+  let isOpen: boolean = $state(false);
+  let selectedItem = $state(items.find(item => item.id === selectedItemId));
   
   const dispatch = createEventDispatcher();
   
@@ -49,7 +60,7 @@
   <div class="dropdown-container relative w-full">
     <button 
       class="w-full py-3 px-4 border border-brdr rounded-lg bg-bg-tertiary text-sm text-text-primary text-left cursor-pointer flex justify-between items-center transition-colors hover:border-brdr-light {disabled ? 'opacity-50 cursor-not-allowed' : ''} {error ? 'border-error' : ''}"
-      on:click={toggleDropdown}
+      onclick={toggleDropdown}
       type="button"
       aria-haspopup="listbox"
       aria-expanded={isOpen}
@@ -82,7 +93,7 @@
           <button 
             class="w-full py-3 px-4 border-none bg-transparent text-text-primary text-sm text-left cursor-pointer flex items-center gap-2.5 border-b border-brdr last:border-b-0 transition-colors hover:bg-primary/10 
             {selectedItemId === item.id ? 'bg-primary/15' : ''}"
-            on:click={() => selectItem(item)}
+            onclick={() => selectItem(item)}
             role="option"
             aria-selected={selectedItemId === item.id}
           >

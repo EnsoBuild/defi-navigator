@@ -11,18 +11,29 @@
   import ModeSwitchButton from '$lib/components/ModeSwitchButton.svelte';
   import Button from '$lib/components/core/Button.svelte';
   
-  // Props
-  export let networks: Network[] = [];
-  export let protocols: Protocol[] = [];
-  export let projects: ProjectData[] = [];
-  export let tokenParams: TokenParams = {};
-  export let onSwitch: (other: 'ui' | 'cli') => void = () => {};
+  
+  interface Props {
+    // Props
+    networks?: Network[];
+    protocols?: Protocol[];
+    projects?: ProjectData[];
+    tokenParams?: TokenParams;
+    onSwitch?: (other: 'ui' | 'cli') => void;
+  }
+
+  let {
+    networks = [],
+    protocols = [],
+    projects = [],
+    tokenParams = $bindable({}),
+    onSwitch = () => {}
+  }: Props = $props();
   // TODO: Deduplicate this with the one in TokenSearch
   type FilterValue = { key: string; value: string | { from: number; to: number } };
 
   // Component state
-  let isDropdownOpen = false;
-  let filters: FilterValue[] = [];
+  let isDropdownOpen = $state(false);
+  let filters: FilterValue[] = $state([]);
 
   const dispatch = createEventDispatcher();
 
@@ -132,7 +143,7 @@
       {#if isDropdownOpen}
         <div
           class="bg-opacity-50 fixed inset-0 z-40 bg-black md:hidden"
-          on:click={toggleDropdown}
+          onclick={toggleDropdown}
         ></div>
         <div class="relative top-full left-0 z-50 mt-2 w-full md:absolute md:w-96">
           <FilterDropdown

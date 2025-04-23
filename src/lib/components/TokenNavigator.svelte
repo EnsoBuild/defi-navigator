@@ -8,7 +8,6 @@
   import type { Network, Protocol, Token } from '$lib/types/api';
   import { debounce } from '$lib/utils/debounce';
   import * as _ from 'lodash';
-  import { writable } from 'svelte/store';
   import ResultsStats from './composite/ResultsStats.svelte';
   import TokenCard from './composite/TokenCard.svelte';
   import TokenDetails from './composite/TokenDetails.svelte';
@@ -23,32 +22,32 @@
   import Nav from './Nav.svelte';
 
   // State
-  let didMount = false;
-  let tokens: Token[] = [];
-  let protocols: Protocol[] = [];
-  let projects: ProjectData[] = [];
-  let networks: Network[] = [];
-  let isLoading = true;
-  let isLoadingMore = false;
-  let error: string | null = null;
-  let showOverlay = false;
-  let selectedToken: TokenData | null = null;
+  let didMount = $state(false);
+  let tokens: Token[] = $state([]);
+  let protocols: Protocol[] = $state([]);
+  let projects: ProjectData[] = $state([]);
+  let networks: Network[] = $state([]);
+  let isLoading = $state(true);
+  let isLoadingMore = $state(false);
+  let error: string | null = $state(null);
+  let showOverlay = $state(false);
+  let selectedToken: TokenData | null = $state(null);
 
-  let initialTokenParams: TokenParams = {};
+  let initialTokenParams: TokenParams = $state({});
 
   // Search and filter state
-  let searchQuery = writable('');
-  let tokenParams = writable<TokenParams>({});
+  let searchQuery = $state('');
+  let tokenParams = $state<TokenParams>({});
   let selectedNetwork = 1; // Default to Ethereum Mainnet
-  let filterView: 'cli' | 'ui' = 'ui'; // 'cli' or 'ui'
+  let filterView: 'cli' | 'ui' = $state('ui'); // 'cli' or 'ui'
   // Initialize and load tokens
 
   onMount(() => {
     let observer: IntersectionObserver | null = null;
     initialTokenParams = parseShareableUrl(page.url.toString());
-    tokenParams.set(initialTokenParams);
+    tokenParams = initialTokenParams;
     // Start loading immediately, but don't await inside the function that's returned
-    Promise.all([loadTokens($tokenParams), loadProtocols(), loadNetworks(), loadProjects()])
+    Promise.all([loadTokens(tokenParams), loadProtocols(), loadNetworks(), loadProjects()])
       .then(() => {
         // Set up the infinite scroll observer after data is loaded
         observer = new IntersectionObserver(handleIntersection, {
@@ -143,7 +142,7 @@
   // Filter handling
   function handleSearchInput(event: CustomEvent<{ query: string }>) {
     const query = event.detail.query;
-    searchQuery.set(query);
+    searchQuery = query;
 
     // Parse the query for structured filtering
     parseFilterQuery(query, {
@@ -162,10 +161,10 @@
         console.debug('Filter applied:', params);
 
         // When we have a complete filter, update the token params and load tokens
-        if (_.isEqual(params, $tokenParams)) {
+        if (_.isEqual(params, tokenParams)) {
           return;
         }
-        tokenParams.set(params);
+        tokenParams = params;
         console.debug('API filtering');
         loadTokens(params);
       }
@@ -191,14 +190,14 @@
     console.debug('Handling Filter', event);
     const params = event.detail;
     console.debug('Filter params:', params);
-    if (!_.isEqual(params, $tokenParams)) {
-      tokenParams.set(params);
+    if (!_.isEqual(params, tokenParams)) {
+      tokenParams = params;
     }
     loadTokens(params);
   }
 
   function onSwitch(view: 'cli' | 'ui') {
-    console.log("Switching view to", view);
+    console.log('Switching view to', view);
     filterView = view;
   }
 </script>
@@ -266,22 +265,18 @@
         {/each}
       </div>
     </div>
-  {:else if tokens.length === 0 && !$tokenParams}
+  {:else if tokens.length === 0 && !tokenParams}
     <EmptyState message="Start searching for tokens" description="" illustration="empty" />
-  {:else if tokens.length === 0 && $tokenParams}
+  {:else if tokens.length === 0 && tokenParams}
     <EmptyState
       message="No matching tokens"
       description="No tokens match your search criteria"
       actionText="Clear search"
       illustration="no-results"
-      on:action={() => searchQuery.set('')}
+      on:action={() => (searchQuery = '')}
     />
   {:else if tokens.length > 0}
-    <ResultsStats
-      totalCount={tokens.length}
-      filteredCount={tokens.length}
-      searchQuery={$searchQuery}
-    />
+    <ResultsStats totalCount={tokens.length} filteredCount={tokens.length} {searchQuery} />
 
     <div
       class="tokens-grid mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"

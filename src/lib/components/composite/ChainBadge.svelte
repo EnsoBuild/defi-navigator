@@ -1,7 +1,11 @@
 <!-- ChainBadge.svelte -->
 <script lang="ts">
-  export let chainId: number;
-  export let showLabel: boolean = true;
+  interface Props {
+    chainId: number;
+    showLabel?: boolean;
+  }
+
+  let { chainId, showLabel = true }: Props = $props();
 </script>
 
 <div class="flex justify-between items-center text-sm">

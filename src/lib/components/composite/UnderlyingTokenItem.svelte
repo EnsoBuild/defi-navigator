@@ -3,7 +3,11 @@
   import TokenLogo from './TokenLogo.svelte';
   import AddressPill from './AddressPill.svelte';
   
-  export let token: UnderlyingToken;
+  interface Props {
+    token: UnderlyingToken;
+  }
+
+  let { token }: Props = $props();
 </script>
 
 <div class="bg-surface-overlay rounded p-2 hover:bg-surface-overlay-hover transition-colors">

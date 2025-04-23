@@ -5,9 +5,13 @@
   import { Share } from '@lucide/svelte';
   import Button from './Button.svelte';
 
-  export let tokenParams: TokenParams = {};
-  let isActive = false;
-  export let moreRoom = false;
+  let isActive = $state(false);
+  interface Props {
+    tokenParams?: TokenParams;
+    moreRoom?: boolean;
+  }
+
+  let { tokenParams = {}, moreRoom = false }: Props = $props();
 
   function handleClick() {
     isActive = true;

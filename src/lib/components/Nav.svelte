@@ -1,12 +1,14 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onMount } from 'svelte';
   import { page } from '$app/state';
 
-  let currentPage = 'tokens';
+  let currentPage = $state('tokens');
 
-  $: {
+  run(() => {
     currentPage = page.url.pathname.indexOf('/protocols') !== -1 ? 'protocols' : 'tokens';
-  }
+  });
 
   onMount(() => {});
 </script>

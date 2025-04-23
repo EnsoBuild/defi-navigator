@@ -1,21 +1,40 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import type { Component } from "@lucide/svelte";
 
-  export let variant: 'primary' | 'secondary' | 'ghost' = 'primary';
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  // export let disabled: boolean = false;
-  export let fullWidth: boolean = false;
-  export let icon: string | null = null;
-  export let iconPosition: 'left' | 'right' = 'left';
-  export let Icon: Component = null; // Placeholder for icon component
+  
+  interface Props {
+    variant?: 'primary' | 'secondary' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
+    // export let disabled: boolean = false;
+    fullWidth?: boolean;
+    icon?: string | null;
+    iconPosition?: 'left' | 'right';
+    Icon?: Component; // Placeholder for icon component
+    children?: import('svelte').Snippet;
+    [key: string]: any
+  }
+
+  let {
+    variant = 'primary',
+    size = 'md',
+    fullWidth = false,
+    icon = null,
+    iconPosition = 'left',
+    Icon = null,
+    children,
+    ...rest
+  }: Props = $props();
 </script>
 
 <div
   class="btn {`btn-${variant}`} {`btn-${size}`} {fullWidth ? 'w-full' : ''}"
-  on:click
-  on:mouseover
-  on:mouseout
-  {...$$restProps}
+  onclick={bubble('click')}
+  onmouseover={bubble('mouseover')}
+  onmouseout={bubble('mouseout')}
+  {...rest}
 >
   {#if icon && iconPosition === 'left'}
     <span class="mr-2">
@@ -47,7 +66,7 @@
     </span>
   {/if}
 
-  <slot />
+  {@render children?.()}
 
   {#if icon && iconPosition === 'right'}
     <span class="ml-2">

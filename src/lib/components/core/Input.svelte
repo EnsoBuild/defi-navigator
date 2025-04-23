@@ -1,18 +1,40 @@
 <script lang="ts">
+  import { createBubbler } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { createEventDispatcher } from 'svelte';
   
-  export let value: string = '';
-  export let type: string = 'text';
-  export let placeholder: string = '';
-  export let disabled: boolean = false;
-  export let required: boolean = false;
-  export let name: string = '';
-  export let id: string = '';
-  export let label: string = '';
-  export let error: string = '';
-  export let icon: string | null = null;
-  export let iconPosition: 'left' | 'right' = 'right';
-  export let clearable: boolean = false;
+  interface Props {
+    value?: string;
+    type?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    required?: boolean;
+    name?: string;
+    id?: string;
+    label?: string;
+    error?: string;
+    icon?: string | null;
+    iconPosition?: 'left' | 'right';
+    clearable?: boolean;
+    [key: string]: any
+  }
+
+  let {
+    value = $bindable(''),
+    type = 'text',
+    placeholder = '',
+    disabled = false,
+    required = false,
+    name = '',
+    id = '',
+    label = '',
+    error = '',
+    icon = null,
+    iconPosition = 'right',
+    clearable = false,
+    ...rest
+  }: Props = $props();
   
   const dispatch = createEventDispatcher();
   
@@ -44,12 +66,12 @@
       {required}
       class="form-input {error ? 'border-error' : ''} {icon && iconPosition === 'left' ? 'pl-10' : ''} {(clearable || (icon && iconPosition === 'right')) ? 'pr-10' : ''}"
       bind:value
-      on:input={handleInput}
-      on:focus
-      on:blur
-      on:keydown
+      oninput={handleInput}
+      onfocus={bubble('focus')}
+      onblur={bubble('blur')}
+      onkeydown={bubble('keydown')}
       autocomplete="off"
-      {...$$restProps}
+      {...rest}
     />
     
     {#if icon && !value && clearable}
@@ -73,7 +95,7 @@
       <button 
         type="button"
         class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-transparent border-none text-text-tertiary hover:text-text-primary cursor-pointer p-1"
-        on:click={handleClear}
+        onclick={handleClear}
         aria-label="Clear"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

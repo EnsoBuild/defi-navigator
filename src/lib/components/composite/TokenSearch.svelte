@@ -11,13 +11,24 @@
   import SearchHelpDialog from './SearchHelpDialog.svelte';
   import ModeSwitchButton from '../ModeSwitchButton.svelte';
 
-  let showSearchHelp = false;
-  export let placeholder = 'Search tokens or filter (e.g. chain:1 apy>10)';
-  export let protocols: Protocol[] = []; // Protocols data passed from parent
-  export let projects: ProjectData[] = []; // Project data passed from parent
-  export let networks: Network[] = []; // Networks data passed from parent
-  export let tokenParams: TokenParams = {};
-  export let onSwitch: (other: 'ui' | 'cli') => void = () => {};
+  let showSearchHelp = $state(false);
+  interface Props {
+    placeholder?: string;
+    protocols?: Protocol[]; // Protocols data passed from parent
+    projects?: ProjectData[]; // Project data passed from parent
+    networks?: Network[]; // Networks data passed from parent
+    tokenParams?: TokenParams;
+    onSwitch?: (other: 'ui' | 'cli') => void;
+  }
+
+  let {
+    placeholder = 'Search tokens or filter (e.g. chain:1 apy>10)',
+    protocols = [],
+    projects = [],
+    networks = [],
+    tokenParams = {},
+    onSwitch = () => {}
+  }: Props = $props();
   interface Suggestion {
     value: string;
     displayText: string;
@@ -26,12 +37,12 @@
     metadata?: any;
   }
 
-  let searchInput = '';
+  let searchInput = $state('');
   let focused = false;
-  let inputElement: HTMLInputElement;
-  let suggestionsVisible = false;
-  let activeSuggestion = -1;
-  let suggestions: Suggestion[] = [];
+  let inputElement: HTMLInputElement = $state();
+  let suggestionsVisible = $state(false);
+  let activeSuggestion = $state(-1);
+  let suggestions: Suggestion[] = $state([]);
   let currentFilterKey: string | null = null;
 
   const dispatch = createEventDispatcher();
@@ -270,15 +281,15 @@
           {placeholder}
           bind:value={searchInput}
           bind:this={inputElement}
-          on:input={handleInput}
-          on:focus={handleFocus}
-          on:blur={handleBlur}
-          on:keydown={handleKeydown}
+          oninput={handleInput}
+          onfocus={handleFocus}
+          onblur={handleBlur}
+          onkeydown={handleKeydown}
         />
 
         <button
           class="text-text-tertiary hover:text-text-primary absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
-          on:click={() => {
+          onclick={() => {
             showSearchHelp = true;
           }}
           title="Search Help"
@@ -312,7 +323,7 @@
                   activeSuggestion
                     ? 'bg-bg-hover'
                     : 'hover:bg-bg-hover'}"
-                  on:click={() => selectSuggestion(suggestion)}
+                  onclick={() => selectSuggestion(suggestion)}
                 >
                   {#if suggestion.logo}
                     <img src={suggestion.logo} alt="" class="h-6 w-6 rounded-full" />

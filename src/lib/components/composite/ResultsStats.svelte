@@ -1,7 +1,17 @@
 <script lang="ts">
-  export let totalCount: number = 0;
-  export let filteredCount: number | null = null;
-  export let searchQuery: string = '';
+  interface Props {
+    totalCount?: number;
+    filteredCount?: number | null;
+    searchQuery?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    totalCount = 0,
+    filteredCount = null,
+    searchQuery = '',
+    children
+  }: Props = $props();
 </script>
 
 <div class="results-stats flex justify-between items-center mb-4 text-text-tertiary text-sm">
@@ -11,6 +21,6 @@
     <span>Showing <span class="text-text-primary font-medium">{totalCount}</span> tokens</span>
   {/if}
   
-  <slot></slot>
+  {@render children?.()}
 </div>
 

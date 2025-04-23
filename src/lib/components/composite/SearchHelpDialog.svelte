@@ -1,11 +1,19 @@
 <script lang="ts">
+  import { createBubbler, stopPropagation } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import { createEventDispatcher } from 'svelte';
   import { FilterKey } from '../../search/filters';
   import { fly, fade } from 'svelte/transition';
 
   const dispatcher = createEventDispatcher();
-  // Bind this value to control visibility from parent
-  export let show = false;
+  
+  interface Props {
+    // Bind this value to control visibility from parent
+    show?: boolean;
+  }
+
+  let { show = $bindable(false) }: Props = $props();
 
   // Example filters to display
   const examples = [
@@ -40,19 +48,19 @@
 {#if show}
   <div
     class="bg-bg-primary bg-opacity-75 fixed inset-0 z-50 flex items-center justify-center p-4"
-    on:click={closeDialog}
+    onclick={closeDialog}
     transition:fade={{ duration: 150 }}
   >
     <div
       class="bg-bg-elevated w-full max-w-2xl overflow-hidden rounded-lg shadow-lg"
-      on:click|stopPropagation
+      onclick={stopPropagation(bubble('click'))}
       transition:fly={{ y: 20, duration: 200 }}
     >
       <header class="border-brdr flex items-center justify-between border-b px-6 py-4">
         <h2 class="text-text-primary text-lg font-semibold">Search Syntax</h2>
         <button
           class="text-text-tertiary hover:text-text-primary transition-colors"
-          on:click={closeDialog}
+          onclick={closeDialog}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +154,7 @@
                     </div>
                     <button
                       class="btn btn-ghost btn-sm self-center"
-                      on:click={() => useExample(example.query)}
+                      onclick={() => useExample(example.query)}
                     >
                       Use
                     </button>
