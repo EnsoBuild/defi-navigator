@@ -71,10 +71,6 @@
     };
   });
 
-  function setFilterView(view: 'cli' | 'ui') {
-    filterView = view;
-  }
-
   const loadTokens = debounce(async (params: TokenParams) => {
     try {
       isLoading = true;
@@ -87,7 +83,7 @@
     } finally {
       isLoading = false;
     }
-  }, 500);
+  }, 1200);
 
   async function loadProtocols() {
     try {
@@ -165,7 +161,6 @@
           return;
         }
         tokenParams = params;
-        console.debug('API filtering');
         loadTokens(params);
       }
     });

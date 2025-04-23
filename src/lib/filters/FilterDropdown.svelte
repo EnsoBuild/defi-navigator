@@ -125,9 +125,9 @@
   }
 
   // Handle input change
-  function handleInputChange(event: CustomEvent) {
-    const target = event.detail.target as HTMLInputElement;
-    filterValue = target.value;
+  function handleInputChange(event: CustomEvent<{ value: string }>) {
+    const value = event.detail.value;
+    filterValue = value;
 
     // Generate suggestions for protocol and chain
     if (

@@ -28,7 +28,7 @@
 
   // Select suggestion
   function selectSuggestion(suggestion: any) {
-    dispatch('select', suggestion);
+    dispatch('select', { value: suggestion.value });
   }
 
   // Handle keyboard navigation
