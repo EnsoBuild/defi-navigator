@@ -11,7 +11,7 @@
   onMount(() => {});
 </script>
 
-<div class="flex w-full items-center justify-between gap-4 py-2">
+<div class="flex w-full items-center justify-between gap-4 py-2 pb-5">
   <h1 class="text-text-primary text-2xl font-bold tracking-tight">
     Enso <span
       class="accent from-primary to-primary-hover bg-gradient-to-r bg-clip-text text-transparent"

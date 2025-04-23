@@ -22,21 +22,21 @@
   >
     {#if current === 'ui'}
       <div class="text-xxs flex flex-row items-center gap-1">
-        <MousePointerIcon
-          color="#ffffff"
-          size={14}
-          class="transition-transform group-hover:-translate-y-1"
-        />
-        UI
-      </div>
-    {:else}
-      <div class="text-xxs flex flex-col items-center gap-1">
         <CommandIcon
           color="#ffffff"
           size={14}
           class="transition-transform group-hover:-translate-y-1"
         />
         CLI
+      </div>
+    {:else}
+      <div class="text-xxs flex flex-col items-center gap-1">
+        <MousePointerIcon
+          color="#ffffff"
+          size={14}
+          class="transition-transform group-hover:-translate-y-1"
+        />
+        UI
       </div>
     {/if}
   </Button>

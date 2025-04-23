@@ -9,6 +9,8 @@
   import ShareFiltersButton from '$lib/components/core/ShareFiltersButton.svelte';
   import { ListFilterPlus } from '@lucide/svelte';
   import ModeSwitchButton from '$lib/components/ModeSwitchButton.svelte';
+  import Button from '$lib/components/core/Button.svelte';
+  
   // Props
   export let networks: Network[] = [];
   export let protocols: Protocol[] = [];
@@ -117,15 +119,16 @@
         {/if}
       </div>
 
-      <button
-        class="btn btn-primary btn-sm group p-1 px-3"
+      <Button
+        type="primary"
+        size="sm"
         on:click={toggleDropdown}
         aria-haspopup="true"
         aria-expanded={isDropdownOpen}
       >
         <span class="mr-2">Filter</span>
         <ListFilterPlus class="transition-transform group-hover:translate-y-1" size={16} />
-      </button>
+      </Button>
       {#if isDropdownOpen}
         <div
           class="bg-opacity-50 fixed inset-0 z-40 bg-black md:hidden"

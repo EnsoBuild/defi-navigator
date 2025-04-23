@@ -52,6 +52,12 @@
         event.stopPropagation();
         if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
           selectSuggestion(suggestions[selectedIndex]);
+        }else{
+          // If no suggestion is selected, we can either clear the input or do nothing
+          if (searchValue !== '') {
+            //@ts-ignore
+            selectSuggestion(event?.target?.value);
+          }
         }
         break;
       case 'Escape':

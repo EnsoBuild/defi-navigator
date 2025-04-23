@@ -1,10 +1,13 @@
 <script lang="ts">
+  import type { Component } from "@lucide/svelte";
+
   export let variant: 'primary' | 'secondary' | 'ghost' = 'primary';
   export let size: 'sm' | 'md' | 'lg' = 'md';
   // export let disabled: boolean = false;
   export let fullWidth: boolean = false;
   export let icon: string | null = null;
   export let iconPosition: 'left' | 'right' = 'left';
+  export let Icon: Component = null; // Placeholder for icon component
 </script>
 
 <div
