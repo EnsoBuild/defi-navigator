@@ -230,10 +230,10 @@
           >
             {#if filterView === 'ui'}
               <CommandIcon class="mr-2 h-4 w-4" />
-              CLI Search
+              CLI
             {:else}
               <MousePointerIcon class="mr-2 h-4 w-4" />
-              UI Search
+              UI
             {/if}
           </Button>
         </div>

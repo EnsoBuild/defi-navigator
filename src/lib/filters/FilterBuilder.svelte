@@ -97,48 +97,47 @@
 <div class="filter-builder relative">
   <!-- Filter pills -->
 
-  <div class="filter-pills mt-2 flex flex-wrap gap-2">
-    {#if filters.length > 0}
-      {#each filters as filter, index}
-        <FilterPill
-          key={filter.key}
-          value={filter.value}
-          on:remove={() => removeFilter(index)}
-          on:update={(e) => updateFilter(index, e.detail)}
-        />
-      {/each}
-    {/if}
-  </div>
-
   <div class="inset-0 mt-2 flex items-end gap-2">
-    <ShareFiltersButton {tokenParams} class="btn btn-secondary p-1 px-2" />
+    <ShareFiltersButton {tokenParams} />
     <!-- Filter button -->
-    <button
-      class="btn btn-secondary btn-sm group p-1 px-3"
-      on:click={toggleDropdown}
-      aria-haspopup="true"
-      aria-expanded={isDropdownOpen}
-    >
-      <span class="mr-2">Filter</span>
-      <ListFilterPlus class="transition-transform group-hover:translate-y-1" size={16} />
-    </button>
-  </div>
-
-  <!-- Dropdown -->
-  {#if isDropdownOpen}
-    <div
-      class="bg-opacity-50 fixed inset-0 z-40 bg-black md:hidden"
-      on:click={toggleDropdown}
-    ></div>
-    <div class="relative top-full left-0 z-50 mt-2 w-full md:absolute md:w-96">
-      <FilterDropdown
-        {networks}
-        {protocols}
-        {projects}
-        on:close={toggleDropdown}
-        on:add={addFilter}
-        onDismiss={() => (isDropdownOpen = false)}
-      />
+    <div>
+      <div class="filter-pills mt-2 flex flex-wrap gap-2 mb-2">
+        {#if filters.length > 0}
+          {#each filters as filter, index}
+            <FilterPill
+              key={filter.key}
+              value={filter.value}
+              on:remove={() => removeFilter(index)}
+              on:update={(e) => updateFilter(index, e.detail)}
+            />
+          {/each}
+        {/if}
+      </div>
+      <button
+        class="btn btn-secondary btn-sm group p-1 px-3"
+        on:click={toggleDropdown}
+        aria-haspopup="true"
+        aria-expanded={isDropdownOpen}
+      >
+        <span class="mr-2">Filter</span>
+        <ListFilterPlus class="transition-transform group-hover:translate-y-1" size={16} />
+      </button>
+      {#if isDropdownOpen}
+        <div
+          class="bg-opacity-50 fixed inset-0 z-40 bg-black md:hidden"
+          on:click={toggleDropdown}
+        ></div>
+        <div class="relative top-full left-0 z-50 mt-2 w-full md:absolute md:w-96">
+          <FilterDropdown
+            {networks}
+            {protocols}
+            {projects}
+            on:close={toggleDropdown}
+            on:add={addFilter}
+            onDismiss={() => (isDropdownOpen = false)}
+          />
+        </div>
+      {/if}
     </div>
-  {/if}
+  </div>
 </div>
