@@ -363,7 +363,7 @@
         <input
           type="text"
           placeholder="Search filters..."
-          class="form-input py-2 pl-10!"
+          class="form-input py-2 pl-10! border border-brdr-light border"
           bind:value={searchQuery}
           oninput={handleSearchChange}
         />
@@ -461,7 +461,7 @@
         {/if}
       {/if}
 
-      <div class="mt-4">
+      <div class="mt-4 px-4">
         <button class="btn btn-primary w-full" onclick={addFilter} disabled={!filterValue}>
           Add Filter
         </button>

@@ -138,7 +138,7 @@ body {
 }
 
 .form-input {
-  @apply border-brdr bg-bg-tertiary text-text-primary w-full rounded-md border px-4 py-3 text-sm transition-colors;
+  @apply border-brdr-light bg-bg-tertiary text-text-primary w-full rounded-md border px-4 py-3 text-sm transition-colors;
 }
 
 .form-input:focus {

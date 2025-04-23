@@ -10,6 +10,9 @@
   import ShareFiltersButton from '../core/ShareFiltersButton.svelte';
   import SearchHelpDialog from './SearchHelpDialog.svelte';
   import ModeSwitchButton from '../ModeSwitchButton.svelte';
+  import { MessageCircleQuestionIcon } from '@lucide/svelte';
+  import QuestionIcon from '../core/QuestionIcon.svelte';
+  import SuggestionsList from './SuggestionsList.svelte';
 
   let showSearchHelp = $state(false);
   interface Props {
@@ -273,8 +276,8 @@
   <div class="search-input-wrapper relative">
     <div class="inset-0 flex items-end gap-2">
       <ShareFiltersButton {tokenParams} moreRoom={true} />
-      <ModeSwitchButton current="cli" {onSwitch}/>
-      <div class="w-full relative">
+      <ModeSwitchButton current="cli" {onSwitch} />
+      <div class="relative w-full">
         <input
           type="text"
           class="form-input pt-[16.5px]! pr-10 pb-2! font-mono"
@@ -294,21 +297,7 @@
           }}
           title="Search Help"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-          </svg>
+          <QuestionIcon />
         </button>
 
         {#if suggestionsVisible}
@@ -316,25 +305,11 @@
             class="suggestions bg-bg-elevated border-brdr absolute z-10 mt-1 w-full overflow-hidden rounded-md border shadow-md"
             transition:fly={{ y: -5, duration: 150 }}
           >
-            <ul class="suggestions-list scrollbar-thin max-h-60 overflow-y-auto py-1">
-              {#each suggestions as suggestion, i}
-                <li
-                  class="suggestion-item flex cursor-pointer items-center gap-2 px-4 py-2 transition-colors {i ===
-                  activeSuggestion
-                    ? 'bg-bg-hover'
-                    : 'hover:bg-bg-hover'}"
-                  onclick={() => selectSuggestion(suggestion)}
-                >
-                  {#if suggestion.logo}
-                    <img src={suggestion.logo} alt="" class="h-6 w-6 rounded-full" />
-                  {/if}
-                  <div class="flex-1">
-                    <div class="text-text-primary font-medium">{suggestion.displayText}</div>
-                    <div class="text-text-tertiary text-xs">{suggestion.description}</div>
-                  </div>
-                </li>
-              {/each}
-            </ul>
+            <SuggestionsList
+              {suggestions}
+              {activeSuggestion}
+              on:select={(event) => selectSuggestion(event.detail.suggestion)}
+            />
           </div>
         {/if}
       </div>

@@ -46,7 +46,7 @@
   }
 </script>
 
-<!-- <svelte:window on:keydown={handleKeydown} /> -->
+<svelte:window on:keydown={handleKeydown} />
 
 {#if show}
   <div
