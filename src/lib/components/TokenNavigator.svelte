@@ -246,14 +246,6 @@
         {/if}
       </div>
     {/if}
-
-    {#if error}
-      <div
-        class="error-message bg-error-light text-error border-error-border mb-5 flex items-center gap-2.5 rounded-lg border p-3 px-4 before:text-base before:content-['⚠️']"
-      >
-        {error}
-      </div>
-    {/if}
   </header>
 
   {#if isLoading && tokens.length === 0}

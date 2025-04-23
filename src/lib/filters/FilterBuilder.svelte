@@ -103,7 +103,7 @@
   <div class="inset-0 mt-2 flex items-end gap-2">
     <div class="flex items-center gap-2">
       <ShareFiltersButton {tokenParams} />
-      <ModeSwitchButton current="ui" {onSwitch} className="p-1 px-3" />
+      <ModeSwitchButton current="ui" {onSwitch} />
     </div>
     <div>
       <div class="filter-pills mt-2 mb-2 ml-1 flex flex-wrap gap-2">

@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
+
   import { CommandIcon, MousePointerIcon } from '@lucide/svelte';
   import Button from './core/Button.svelte';
 
   let {
     current,
     onSwitch,
-    className
-  }: { current: 'ui' | 'cli'; onSwitch: (other: 'ui' | 'cli') => void; className: any } = $props();
+  }: { current: 'ui' | 'cli'; onSwitch: (other: 'ui' | 'cli') => void; } = $props();
 
   function switchTo() {
     onSwitch(current == 'ui' ? 'cli' : 'ui');
-    console.log('Switching view to', current == 'ui' ? 'cli' : 'ui');
+    console.debug('Switching view to', current == 'ui' ? 'cli' : 'ui');
   }
 </script>
 
