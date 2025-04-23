@@ -8,12 +8,13 @@
   import { unpackTokenParams } from '$lib/search/web';
   import ShareFiltersButton from '$lib/components/core/ShareFiltersButton.svelte';
   import { ListFilterPlus } from '@lucide/svelte';
+  import ModeSwitchButton from '$lib/components/ModeSwitchButton.svelte';
   // Props
   export let networks: Network[] = [];
   export let protocols: Protocol[] = [];
   export let projects: ProjectData[] = [];
   export let tokenParams: TokenParams = {};
-
+  export let onSwitch: (other: 'ui' | 'cli') => void = () => {};
   // TODO: Deduplicate this with the one in TokenSearch
   type FilterValue = { key: string; value: string | { from: number; to: number } };
 
@@ -98,10 +99,12 @@
   <!-- Filter pills -->
 
   <div class="inset-0 mt-2 flex items-end gap-2">
-    <ShareFiltersButton {tokenParams} />
-    <!-- Filter button -->
+    <div class="flex items-center gap-2">
+      <ShareFiltersButton {tokenParams} />
+      <ModeSwitchButton current="ui" {onSwitch} className="p-1 px-3" />
+    </div>
     <div>
-      <div class="filter-pills mt-2 flex flex-wrap gap-2 mb-2">
+      <div class="filter-pills mt-2 mb-2 ml-1 flex flex-wrap gap-2">
         {#if filters.length > 0}
           {#each filters as filter, index}
             <FilterPill
@@ -113,8 +116,9 @@
           {/each}
         {/if}
       </div>
+
       <button
-        class="btn btn-secondary btn-sm group p-1 px-3"
+        class="btn btn-primary btn-sm group p-1 px-3"
         on:click={toggleDropdown}
         aria-haspopup="true"
         aria-expanded={isDropdownOpen}

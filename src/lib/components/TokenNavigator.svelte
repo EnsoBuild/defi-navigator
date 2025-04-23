@@ -10,7 +10,6 @@
   import * as _ from 'lodash';
   import { writable } from 'svelte/store';
   import ResultsStats from './composite/ResultsStats.svelte';
-  import SearchHelpDialog from './composite/SearchHelpDialog.svelte';
   import TokenCard from './composite/TokenCard.svelte';
   import TokenDetails from './composite/TokenDetails.svelte';
   import TokenSearch from './composite/TokenSearch.svelte';
@@ -20,12 +19,8 @@
 
   import { parseShareableUrl } from '$lib/search/url';
 
-  import Nav from './Nav.svelte';
   import { page } from '$app/state';
-  import { fade } from 'svelte/transition';
-  import ShareFiltersButton from './core/ShareFiltersButton.svelte';
-  import Button from './core/Button.svelte';
-  import { CommandIcon, MousePointerIcon, TerminalIcon, TerminalSquareIcon } from '@lucide/svelte';
+  import Nav from './Nav.svelte';
 
   // State
   let didMount = false;
@@ -201,6 +196,11 @@
     }
     loadTokens(params);
   }
+
+  function onSwitch(view: 'cli' | 'ui') {
+    console.log("Switching view to", view);
+    filterView = view;
+  }
 </script>
 
 <svelte:head>
@@ -223,20 +223,7 @@
     {/if}
     {#if didMount}
       <div>
-        <div class=" flex overflow-hidden rounded-md">
-          <Button
-            class="btn btn-secondary btn-sm no-translate rounded-sm border-0"
-            on:click={() => setFilterView(filterView === 'ui' ? 'cli' : 'ui')}
-          >
-            {#if filterView === 'ui'}
-              <CommandIcon class="mr-2 h-4 w-4" />
-              CLI
-            {:else}
-              <MousePointerIcon class="mr-2 h-4 w-4" />
-              UI
-            {/if}
-          </Button>
-        </div>
+        <div class=" flex overflow-hidden rounded-md"></div>
         {#if filterView === 'cli'}
           <TokenSearch
             on:input={handleSearchInput}
@@ -245,6 +232,7 @@
             {networks}
             {projects}
             tokenParams={initialTokenParams}
+            {onSwitch}
           />
         {:else}
           <FilterBuilder
@@ -253,9 +241,9 @@
             on:filter={handleFilter}
             {projects}
             tokenParams={initialTokenParams}
+            {onSwitch}
           />
         {/if}
-        
       </div>
     {/if}
 

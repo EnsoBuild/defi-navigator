@@ -9,6 +9,7 @@
   import type { TokenParams } from '../../types/api';
   import ShareFiltersButton from '../core/ShareFiltersButton.svelte';
   import SearchHelpDialog from './SearchHelpDialog.svelte';
+  import ModeSwitchButton from '../ModeSwitchButton.svelte';
 
   let showSearchHelp = false;
   export let placeholder = 'Search tokens or filter (e.g. chain:1 apy>10)';
@@ -16,6 +17,7 @@
   export let projects: ProjectData[] = []; // Project data passed from parent
   export let networks: Network[] = []; // Networks data passed from parent
   export let tokenParams: TokenParams = {};
+  export let onSwitch: (other: 'ui' | 'cli') => void = () => {};
   interface Suggestion {
     value: string;
     displayText: string;
@@ -260,7 +262,7 @@
   <div class="search-input-wrapper relative">
     <div class="inset-0 flex items-end gap-2">
       <ShareFiltersButton {tokenParams} moreRoom={true} />
-      
+      <ModeSwitchButton current="cli" {onSwitch}/>
       <div class="w-full relative">
         <input
           type="text"
