@@ -22,8 +22,8 @@
         'chain:1 underlying:0x4C612E3B15b96Ff9A6faED838F8d07d479a8dD4c underlying:0x6B175474E89094C44Da98b954EedeAC495271d0F',
       description: 'Find tokens containing any of several specific underlying token on Ethereum'
     },
-    { query: 'apy>gt;10 apy>lt;20', description: 'Find tokens with APY between 10% and 20%' },
-    { query: 'tvl>gt;1000000', description: 'Find tokens with TVL greater than $1M' },
+    { query: 'apy>10 apy<20', description: 'Find tokens with APY between 10% and 20%' },
+    { query: 'tvl>1000000', description: 'Find tokens with TVL greater than $1M' },
     { query: 'protocol:aave type:defi', description: 'Find Aave DeFi tokens' }
   ];
 

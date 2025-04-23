@@ -11,7 +11,7 @@
 
   function handleClick() {
     isActive = true;
-    console.log(tokenParams);
+    console.debug(tokenParams);
     navigator.clipboard
       .writeText(createShareableUrl(tokenParams))
       .then(() => {

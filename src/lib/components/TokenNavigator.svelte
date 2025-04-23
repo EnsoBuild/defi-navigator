@@ -24,6 +24,8 @@
   import { page } from '$app/state';
   import { fade } from 'svelte/transition';
   import ShareFiltersButton from './core/ShareFiltersButton.svelte';
+  import Button from './core/Button.svelte';
+  import { CommandIcon, MousePointerIcon, TerminalIcon, TerminalSquareIcon } from '@lucide/svelte';
 
   // State
   let didMount = false;
@@ -36,7 +38,7 @@
   let error: string | null = null;
   let showOverlay = false;
   let selectedToken: TokenData | null = null;
-  
+
   let initialTokenParams: TokenParams = {};
 
   // Search and filter state
@@ -220,31 +222,21 @@
       </div>
     {/if}
     {#if didMount}
-      <div class="flex items-center justify-between">
-        <div class="mb-4 flex justify-end justify-items-stretch gap-3">
-          <div class="bg-bg-tertiary flex overflow-hidden rounded-md">
-            <button
-              class="btn {filterView === 'cli'
-                ? 'btn-primary'
-                : 'btn-ghost'} btn-sm no-translate rounded-none! border-0"
-              on:click={() => setFilterView('cli')}
-            >
-              CLI Filters
-            </button>
-            <button
-              class="btn {filterView === 'ui'
-                ? 'btn-primary'
-                : 'btn-ghost'} btn-sm no-translate rounded-none! border-0 px-4"
-              on:click={() => setFilterView('ui')}
-            >
-              UI Filters
-            </button>
-          </div>
-          <!-- <button class="btn btn-secondary btn-md no-translate" on:click={share}> Share </button> -->
-        </div>
-      </div>
-
       <div>
+        <div class=" flex overflow-hidden rounded-md">
+          <Button
+            class="btn btn-secondary btn-sm no-translate rounded-sm border-0"
+            on:click={() => setFilterView(filterView === 'ui' ? 'cli' : 'ui')}
+          >
+            {#if filterView === 'ui'}
+              <CommandIcon class="mr-2 h-4 w-4" />
+              CLI Search
+            {:else}
+              <MousePointerIcon class="mr-2 h-4 w-4" />
+              UI Search
+            {/if}
+          </Button>
+        </div>
         {#if filterView === 'cli'}
           <TokenSearch
             on:input={handleSearchInput}
@@ -263,6 +255,7 @@
             tokenParams={initialTokenParams}
           />
         {/if}
+        
       </div>
     {/if}
 
@@ -330,6 +323,4 @@
   {#if showOverlay && selectedToken}
     <TokenDetails token={selectedToken} {showOverlay} on:close={closeOverlay} />
   {/if}
-
-  
 </div>

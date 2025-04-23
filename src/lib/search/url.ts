@@ -43,7 +43,7 @@ export function parseShareableUrl(url: string): TokenParams {
   const params: TokenParams = {};
   const parsedUrl = new URL(url);
   const searchParams = parsedUrl.searchParams;
-  console.log('Parsed URL:', parsedUrl);
+  console.debug('Parsed URL:', parsedUrl);
 
   // Handle array parameters
   const addressValues = searchParams.getAll('address[]');

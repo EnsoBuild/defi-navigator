@@ -260,7 +260,8 @@
   <div class="search-input-wrapper relative">
     <div class="inset-0 flex items-end gap-2">
       <ShareFiltersButton {tokenParams} moreRoom={true} />
-      <div class="flex-1">
+      
+      <div class="w-full relative">
         <input
           type="text"
           class="form-input pt-[16.5px]! pr-10 pb-2! font-mono"
@@ -296,40 +297,40 @@
             <line x1="12" y1="17" x2="12.01" y2="17"></line>
           </svg>
         </button>
+
+        {#if suggestionsVisible}
+          <div
+            class="suggestions bg-bg-elevated border-brdr absolute z-10 mt-1 w-full overflow-hidden rounded-md border shadow-md"
+            transition:fly={{ y: -5, duration: 150 }}
+          >
+            <ul class="suggestions-list scrollbar-thin max-h-60 overflow-y-auto py-1">
+              {#each suggestions as suggestion, i}
+                <li
+                  class="suggestion-item flex cursor-pointer items-center gap-2 px-4 py-2 transition-colors {i ===
+                  activeSuggestion
+                    ? 'bg-bg-hover'
+                    : 'hover:bg-bg-hover'}"
+                  on:click={() => selectSuggestion(suggestion)}
+                >
+                  {#if suggestion.logo}
+                    <img src={suggestion.logo} alt="" class="h-6 w-6 rounded-full" />
+                  {/if}
+                  <div class="flex-1">
+                    <div class="text-text-primary font-medium">{suggestion.displayText}</div>
+                    <div class="text-text-tertiary text-xs">{suggestion.description}</div>
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
-
-  {#if suggestionsVisible}
-    <div
-      class="suggestions bg-bg-elevated border-brdr absolute z-10 mt-1 w-full overflow-hidden rounded-md border shadow-md"
-      transition:fly={{ y: -5, duration: 150 }}
-    >
-      <ul class="suggestions-list scrollbar-thin max-h-60 overflow-y-auto py-1">
-        {#each suggestions as suggestion, i}
-          <li
-            class="suggestion-item flex cursor-pointer items-center gap-2 px-4 py-2 transition-colors {i ===
-            activeSuggestion
-              ? 'bg-bg-hover'
-              : 'hover:bg-bg-hover'}"
-            on:click={() => selectSuggestion(suggestion)}
-          >
-            {#if suggestion.logo}
-              <img src={suggestion.logo} alt="" class="h-6 w-6 rounded-full" />
-            {/if}
-            <div class="flex-1">
-              <div class="text-text-primary font-medium">{suggestion.displayText}</div>
-              <div class="text-text-tertiary text-xs">{suggestion.description}</div>
-            </div>
-          </li>
-        {/each}
-      </ul>
-    </div>
-  {/if}
   <SearchHelpDialog
     bind:show={showSearchHelp}
     on:useExample={(p) => {
-      console.log('Use example', p);
+      console.debug('Use example', p);
       searchInput = p.detail.query;
     }}
   />

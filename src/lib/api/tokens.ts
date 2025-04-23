@@ -1,6 +1,4 @@
-import type { TokenParams } from '$lib/filters/types';
-import type { ProjectData } from '$lib/search/types';
-import type { Network, Protocol, Token } from '$lib/types';
+import type { Network, ProjectData, Protocol, Token, TokenParams } from '$lib/types/api';
 
 const API_BASE_URL: string = 'https://api.enso.finance/api/v1';
 const AUTH_TOKEN: string = '56b3d1f4-5c59-4fc1-8998-16d001e277bc';
@@ -11,6 +9,7 @@ const AUTH_TOKEN: string = '56b3d1f4-5c59-4fc1-8998-16d001e277bc';
  * @returns Promise with token data
  */
 export async function getTokenData(params: TokenParams): Promise<Token[]> {
+  console.debug("API", params)
   try {
     // Build query parameters
     const queryParams = new URLSearchParams();

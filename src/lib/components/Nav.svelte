@@ -5,8 +5,6 @@
   let currentPage = 'tokens';
 
   $: {
-    // This will run whenever the currentPage variable changes
-    console.log('Current page:', page.url);
     currentPage = page.url.pathname.indexOf('/protocols') !== -1 ? 'protocols' : 'tokens';
   }
 

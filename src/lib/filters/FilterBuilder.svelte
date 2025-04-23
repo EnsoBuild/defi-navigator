@@ -25,7 +25,7 @@
 
   onMount(() => {
     filters = unpackTokenParams(tokenParams);
-    console.log('Unpacked filters:', filters);
+    console.debug('Unpacked filters:', filters);
 
     if (filters.length > 0) {
       tick().then(() => {
@@ -41,7 +41,7 @@
 
   // Add new filter
   function addFilter(event: CustomEvent) {
-    console.log('Add filter', event);
+    console.debug('Add filter', event);
     const { filterKey, filterValue } = event.detail;
     filters = [...filters, { key: filterKey, value: filterValue }];
     updateTokenParams();
@@ -63,7 +63,7 @@
   // Transform filters to TokenParams and dispatch
   function updateTokenParams() {
     tokenParams = {};
-
+    console.debug('Fitlers for update', filters);
     filters.forEach((filter: FilterValue) => {
       const { key, value } = filter;
 
@@ -82,10 +82,9 @@
       // Handle multiple underlying tokens
       if (key === FilterKey.UNDERLYING_TOKENS || key === FilterKey.UNDERLYING_TOKENS_EXACT) {
         // Problematic for Address | Address[]
-
+        //@ts-ignore TODO
         tokenParams[key]!.push(value as Address);
-      } else if (key in FilterKey) {
-        console.log('Here');
+      } else {
         //@ts-ignore TODO
         tokenParams[key] = value;
       }
@@ -115,7 +114,7 @@
     <ShareFiltersButton {tokenParams} class="btn btn-secondary p-1 px-2" />
     <!-- Filter button -->
     <button
-      class="btn btn-secondary btn-sm p-1 px-3 group"
+      class="btn btn-secondary btn-sm group p-1 px-3"
       on:click={toggleDropdown}
       aria-haspopup="true"
       aria-expanded={isDropdownOpen}
@@ -135,6 +134,7 @@
       <FilterDropdown
         {networks}
         {protocols}
+        {projects}
         on:close={toggleDropdown}
         on:add={addFilter}
         onDismiss={() => (isDropdownOpen = false)}

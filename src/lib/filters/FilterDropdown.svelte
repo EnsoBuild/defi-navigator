@@ -5,9 +5,12 @@
   import FilterSuggestions from './FilterSuggestions.svelte';
   import FilterRangeInput from './FilterRangeInput.svelte';
 
+  import type { Network, ProjectData, Protocol } from '$lib/types/api';
+
   // Props
-  export let networks: any[] = [];
-  export let protocols: any[] = [];
+  export let networks: Network[] = [];
+  export let protocols: Protocol[] = [];
+  export let projects: ProjectData[] = [];
   export let onDismiss: () => void = () => {}; // New prop for dismissing dropdown
 
   // Component state
@@ -52,7 +55,7 @@
   onMount(() => {
     // Focus the search input when component mounts
     const searchInput = dropdownElement?.querySelector('input');
-    
+
     if (searchInput) {
       tick().then(() => {
         searchInput.focus();
@@ -116,7 +119,7 @@
     filterValue = target.value;
 
     // Generate suggestions for protocol and chain
-    if (selectedFilter === FilterKey.PROTOCOL || selectedFilter === FilterKey.CHAIN_ID) {
+    if (selectedFilter === FilterKey.PROTOCOL || selectedFilter === FilterKey.CHAIN_ID || selectedFilter === FilterKey.PROJECT) {
       generateSuggestions(selectedFilter, filterValue as string);
       showSuggestions = true;
     }
@@ -143,6 +146,20 @@
             value: protocol.slug,
             displayText: protocol.name || protocol.slug,
             logo: protocol.logosUri && protocol.logosUri[0],
+            metadata: protocol
+          }));
+        break;
+      case FilterKey.PROJECT:
+        suggestions = projects
+          .filter((project) => project.id?.toLowerCase().includes(searchValue))
+          .map((project) => ({
+            project: project,
+            protocol: protocols.filter((protocol) => protocol.slug === project.id)[0]
+          }))
+          .map(({ project, protocol }) => ({
+            value: project.id,
+            displayText: protocol?.name || protocol?.slug || project.id,
+            logo: protocol?.logosUri && protocol.logosUri[0],
             metadata: protocol
           }));
         break;

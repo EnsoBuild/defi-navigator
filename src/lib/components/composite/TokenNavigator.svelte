@@ -148,7 +148,7 @@
           
         }
         tokenParams.set(params);
-        console.log('API filtering', params);
+        console.debug('API filtering', params);
         loadTokens(params);
       }
     });
