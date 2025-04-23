@@ -10,7 +10,6 @@
 
   import type { Network, ProjectData, Protocol } from '$lib/types/api';
 
-  
   interface Props {
     // Props
     networks?: Network[];
@@ -19,12 +18,7 @@
     onDismiss?: () => void; // New prop for dismissing dropdown
   }
 
-  let {
-    networks = [],
-    protocols = [],
-    projects = [],
-    onDismiss = () => {}
-  }: Props = $props();
+  let { networks = [], protocols = [], projects = [], onDismiss = () => {} }: Props = $props();
 
   // Component state
   let selectedFilter: string | null = $state(null);
@@ -134,7 +128,11 @@
     filterValue = target.value;
 
     // Generate suggestions for protocol and chain
-    if (selectedFilter === FilterKey.PROTOCOL || selectedFilter === FilterKey.CHAIN_ID || selectedFilter === FilterKey.PROJECT) {
+    if (
+      selectedFilter === FilterKey.PROTOCOL ||
+      selectedFilter === FilterKey.CHAIN_ID ||
+      selectedFilter === FilterKey.PROJECT
+    ) {
       generateSuggestions(selectedFilter, filterValue as string);
       showSuggestions = true;
     }
@@ -363,7 +361,7 @@
         <input
           type="text"
           placeholder="Search filters..."
-          class="form-input py-2 pl-10! border border-brdr-light border"
+          class="form-input py-2 pl-10!"
           bind:value={searchQuery}
           oninput={handleSearchChange}
         />
@@ -433,38 +431,40 @@
         </button>
         <h4 class="font-medium">{selectedFilter}</h4>
       </div>
+      <div class="px-4">
+        {#if isRangeFilter(selectedFilter)}
+          <!-- Range input for APY or TVL -->
 
-      {#if isRangeFilter(selectedFilter)}
-        <!-- Range input for APY or TVL -->
-        <FilterRangeInput
-          type={selectedFilter.includes('apy') ? 'apy' : 'tvl'}
-          on:change={handleRangeChange}
-        />
-      {:else}
-        <!-- Regular input -->
-        <div class="relative px-4">
-          <FilterInput
-            value={filterValue as string}
-            placeholder={`Enter ${getFilterKeyDescription(selectedFilter)}...`}
-            on:input={handleInputChange}
+          <FilterRangeInput
+            type={selectedFilter.includes('apy') ? 'apy' : 'tvl'}
+            on:change={handleRangeChange}
           />
-        </div>
-
-        {#if showSuggestions && suggestions.length > 0}
-          <div class="relative mt-1">
-            <FilterSuggestions
-              {suggestions}
-              on:select={handleSuggestionSelect}
-              on:update={handleSuggestionUpdate}
+        {:else}
+          <!-- Regular input -->
+          <div class="relative">
+            <FilterInput
+              value={filterValue as string}
+              placeholder={`Enter ${getFilterKeyDescription(selectedFilter)}...`}
+              on:input={handleInputChange}
             />
           </div>
-        {/if}
-      {/if}
 
-      <div class="mt-4 px-4">
-        <button class="btn btn-primary w-full" onclick={addFilter} disabled={!filterValue}>
-          Add Filter
-        </button>
+          {#if showSuggestions && suggestions.length > 0}
+            <div class="relative mt-1">
+              <FilterSuggestions
+                {suggestions}
+                on:select={handleSuggestionSelect}
+                on:update={handleSuggestionUpdate}
+              />
+            </div>
+          {/if}
+        {/if}
+
+        <div class="mt-4">
+          <button class="btn btn-primary w-full" onclick={addFilter} disabled={!filterValue}>
+            Add Filter
+          </button>
+        </div>
       </div>
     </div>
   {/if}
