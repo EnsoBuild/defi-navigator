@@ -187,9 +187,7 @@
 
   // visual filter
   function handleFilter(event: CustomEvent<TokenParams>) {
-    console.debug('Handling Filter', event);
     const params = event.detail;
-    console.debug('Filter params:', params);
     if (!_.isEqual(params, tokenParams)) {
       tokenParams = params;
     }

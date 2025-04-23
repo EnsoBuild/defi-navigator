@@ -77,7 +77,6 @@
   // Transform filters to TokenParams and dispatch
   function updateTokenParams() {
     tokenParams = {};
-    console.debug('Fitlers for update', filters);
     filters.forEach((filter: FilterValue) => {
       const { key, value } = filter;
 

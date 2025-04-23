@@ -114,10 +114,12 @@
 
   // Handle suggestion select
   function handleSuggestionSelect(event: CustomEvent) {
+    console.log(event)
     filterValue = event.detail.value;
     showSuggestions = false;
     addFilter();
   }
+
   function handleSuggestionUpdate(event: CustomEvent) {
     filterValueSelected = event.detail.value;
   }
@@ -140,6 +142,7 @@
 
   // Handle search input change
   function handleSearchChange(event: any) {
+    console.log('Search input changed:', event.target.value);
     searchQuery = event.target.value;
   }
 
@@ -438,6 +441,7 @@
           <FilterRangeInput
             type={selectedFilter.includes('apy') ? 'apy' : 'tvl'}
             on:change={handleRangeChange}
+            onReturn={addFilter}
           />
         {:else}
           <!-- Regular input -->
@@ -446,6 +450,7 @@
               value={filterValue as string}
               placeholder={`Enter ${getFilterKeyDescription(selectedFilter)}...`}
               on:input={handleInputChange}
+              onReturn={handleSuggestionSelect}
             />
           </div>
 
