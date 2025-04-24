@@ -7,7 +7,7 @@
     value?: string;
     placeholder?: string;
     type?: string;
-    onReturn: (detail: { value: string }) => void;
+    onReturn: (e: CustomEvent<{ value: string }>) => void;
   }
 
   let { value = '', placeholder = 'Enter value...', type = 'text', onReturn }: Props = $props();
@@ -20,7 +20,7 @@
   function onkeydown(event: KeyboardEvent) {
     // Add your keydown handling logic here
     if (event.key === 'Enter') {
-      onReturn({ value });
+      onReturn(new CustomEvent(value));
     }
   }
 </script>

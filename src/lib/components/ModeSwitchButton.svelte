@@ -1,12 +1,9 @@
 <script lang="ts">
-
   import { CommandIcon, MousePointerIcon } from '@lucide/svelte';
   import Button from './core/Button.svelte';
 
-  let {
-    current,
-    onSwitch,
-  }: { current: 'ui' | 'cli'; onSwitch: (other: 'ui' | 'cli') => void; } = $props();
+  let { current, onSwitch }: { current: 'ui' | 'cli'; onSwitch: (other: 'ui' | 'cli') => void } =
+    $props();
 
   function switchTo() {
     onSwitch(current == 'ui' ? 'cli' : 'ui');
@@ -19,24 +16,22 @@
     class="btn btn-sm border-brdr-light group flex items-center gap-1.5 border! text-white"
     on:click={switchTo}
   >
-    {#if current === 'ui'}
-      <div class="text-xxs flex flex-row items-center gap-1">
+    <div class="text-xxs flex flex-col items-center gap-1">
+      {#if current === 'ui'}
         <CommandIcon
           color="#ffffff"
           size={14}
           class="transition-transform group-hover:-translate-y-1"
         />
         CLI
-      </div>
-    {:else}
-      <div class="text-xxs flex flex-col items-center gap-1">
+      {:else}
         <MousePointerIcon
           color="#ffffff"
           size={14}
           class="transition-transform group-hover:-translate-y-1"
         />
         UI
-      </div>
-    {/if}
+      {/if}
+    </div>
   </Button>
 </div>

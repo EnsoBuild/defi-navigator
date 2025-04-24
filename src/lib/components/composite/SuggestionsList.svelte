@@ -19,7 +19,7 @@
   }
 </script>
 
-<ul class="suggestions-list scrollbar-thin max-h-60 overflow-y-auto py-1">
+<ul class="suggestions-list scrollbar-thin max-h-60 overflow-y-auto py-1 flex-1">
   {#each suggestions as suggestion, i}
     <li
       class="suggestion-item flex cursor-pointer items-center gap-2 px-4 py-2 transition-colors {i ===

@@ -51,9 +51,9 @@
   role="button"
   aria-label={`View details for ${token.name || 'Unknown Token'}`}
   title="{token.name} ({token.symbol})"
-  padding="md"
+  size="sm"
 >
-  <div class="mb-3 flex items-center gap-3">
+  <div class="flex items-center gap-3">
     <TokenLogo logoUri={token.logosUri?.[0]} symbol={token.symbol} size="md" />
 
     <div class="flex-1">
@@ -68,7 +68,7 @@
   </div>
 
   <!-- Metrics row -->
-  <div class="mb-2 flex gap-2">
+  <div class="mt-4 flex gap-2">
     {#if token.apy !== null && token.apy !== undefined}
       <div class="bg-bg-component border-brdr-light flex-1 rounded-md border px-3 py-2 text-sm">
         <div class="flex items-center justify-between">

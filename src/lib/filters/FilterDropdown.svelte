@@ -93,6 +93,7 @@
 
   // Select a filter type
   function selectFilter(key: string) {
+    console.log("Selected filter:", key);
     selectedFilter = key;
     filterValue = '';
     showSuggestions = false;
@@ -113,19 +114,21 @@
   }
 
   // Handle suggestion select
-  function handleSuggestionSelect(event: CustomEvent) {
-    console.log(event)
+  function handleSuggestionSelect(event: CustomEvent<{ value: string }>) {
+    console.log("Handle Suggestion Select", event);
     filterValue = event.detail.value;
     showSuggestions = false;
     addFilter();
   }
 
   function handleSuggestionUpdate(event: CustomEvent) {
+    console.log("Handle Suggestion Update", event);
     filterValueSelected = event.detail.value;
   }
 
   // Handle input change
   function handleInputChange(event: CustomEvent<{ value: string }>) {
+    console.log('Input changed:', event.detail.value);
     const value = event.detail.value;
     filterValue = value;
 
@@ -387,7 +390,7 @@
     </div>
 
     <!-- Filter selection list - fixed height with scrolling -->
-    <div class="scrollbar-thin max-h-[60vh] overflow-y-auto px-4 md:max-h-[310px]">
+    <div class="scrollbar-thin h-[300px] overflow-y-auto px-4 md:max-h-[300px]">
       <div class="flex flex-col gap-2 pb-4">
         {#if filteredOptions.length === 0}
           <div class="text-text-tertiary py-4 text-center">No filters match your search</div>
@@ -453,9 +456,8 @@
               onReturn={handleSuggestionSelect}
             />
           </div>
-
           {#if showSuggestions && suggestions.length > 0}
-            <div class="relative mt-1">
+            <div class="bottom-full mb-1 w-full">
               <FilterSuggestions
                 {suggestions}
                 on:select={handleSuggestionSelect}
@@ -477,14 +479,11 @@
 
 <style>
   .filter-dropdown {
-    position: absolute;
     z-index: 50;
     width: 100%;
-    max-width: 32rem;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    max-height: 90vh;
     outline: none; /* Remove outline for tab focus */
   }
 

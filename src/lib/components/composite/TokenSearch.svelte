@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import { FilterKey } from '../../search/filters';
-  import { fly } from 'svelte/transition';
+  import { fade, fly } from 'svelte/transition';
 
   import type { Network, ProjectData, Protocol } from '$lib/types/api';
   import { deserializeTokenParams } from '$lib/search/parser';
@@ -9,8 +9,7 @@
   import type { TokenParams } from '../../types/api';
   import ShareFiltersButton from '../core/ShareFiltersButton.svelte';
   import SearchHelpDialog from './SearchHelpDialog.svelte';
-  import ModeSwitchButton from '../ModeSwitchButton.svelte';
-  import { MessageCircleQuestionIcon } from '@lucide/svelte';
+  import ModeSwitchButton from '../ModeSwitchButton.svelte';;
   import QuestionIcon from '../core/QuestionIcon.svelte';
   import SuggestionsList from './SuggestionsList.svelte';
 
@@ -42,7 +41,7 @@
 
   let searchInput = $state('');
   let focused = false;
-  let inputElement: HTMLInputElement = $state();
+  let inputElement: HTMLInputElement | null | undefined = $state();
   let suggestionsVisible = $state(false);
   let activeSuggestion = $state(-1);
   let suggestions: Suggestion[] = $state([]);
@@ -189,7 +188,7 @@
     }
 
     suggestionsVisible = false;
-    inputElement.focus();
+    inputElement?.focus();
     handleInput();
   }
 
@@ -258,7 +257,7 @@
   onMount(() => {
     searchInput = deserializeTokenParams(tokenParams);
     suggestions = generateSuggestions('');
-
+    inputElement?.focus();
     window.addEventListener('keydown', handleGlobalKeydown);
 
     // Don't forget to clean up
@@ -272,12 +271,24 @@
   }
 </script>
 
-<div class="token-search relative">
+<div class="token-search relative flex-1">
   <div class="search-input-wrapper relative">
     <div class="inset-0 flex items-end gap-2">
       <ShareFiltersButton {tokenParams} moreRoom={true} />
       <ModeSwitchButton current="cli" {onSwitch} />
       <div class="relative w-full">
+        {#if suggestionsVisible}
+          <div
+            class="bg-bg-elevated border-brdr absolute absolute right-0 bottom-full left-0 z-10 z-10 mb-1 flex w-full overflow-hidden rounded-md border shadow-md"
+            transition:fly={{ y: 15, duration: 150 }}
+          >
+            <SuggestionsList
+              {suggestions}
+              {activeSuggestion}
+              on:select={(event) => selectSuggestion(event.detail.suggestion)}
+            />
+          </div>
+        {/if}
         <input
           type="text"
           class="form-input pt-[16.5px]! pr-10 pb-2! font-mono"
@@ -299,19 +310,6 @@
         >
           <QuestionIcon />
         </button>
-
-        {#if suggestionsVisible}
-          <div
-            class="suggestions bg-bg-elevated border-brdr absolute z-10 mt-1 w-full overflow-hidden rounded-md border shadow-md"
-            transition:fly={{ y: -5, duration: 150 }}
-          >
-            <SuggestionsList
-              {suggestions}
-              {activeSuggestion}
-              on:select={(event) => selectSuggestion(event.detail.suggestion)}
-            />
-          </div>
-        {/if}
       </div>
     </div>
   </div>

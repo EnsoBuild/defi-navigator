@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade, fly } from 'svelte/transition';
   import type { Address, Network, ProjectData, Protocol } from '$lib/types/api';
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { FilterKey } from '../types/index';
@@ -10,8 +11,7 @@
   import { ListFilterPlus } from '@lucide/svelte';
   import ModeSwitchButton from '$lib/components/ModeSwitchButton.svelte';
   import Button from '$lib/components/core/Button.svelte';
-  
-  
+
   interface Props {
     // Props
     networks?: Network[];
@@ -107,9 +107,27 @@
   }
 </script>
 
-<div class="filter-builder relative">
+<div class="filter-builder relative flex-1">
   <!-- Filter pills -->
-
+  {#if isDropdownOpen}
+    <div
+      class="bg-opacity-50 fixed inset-0 z-40 h-full w-full bg-none"
+      onclick={toggleDropdown}
+    ></div>
+    <div
+      class="absolute right-0 bottom-0 left-0 z-10 flex w-full items-center justify-between -translate-y-20 height-[90vh] z-50"
+      transition:fly={{ y: -5, duration: 150 }}
+      >
+      <FilterDropdown
+        {networks}
+        {protocols}
+        {projects}
+        on:close={toggleDropdown}
+        on:add={addFilter}
+        onDismiss={() => (isDropdownOpen = false)}
+      />
+    </div>
+  {/if}
   <div class="inset-0 mt-2 flex items-end gap-2">
     <div class="flex items-center gap-2">
       <ShareFiltersButton {tokenParams} />
@@ -139,22 +157,6 @@
         <span class="mr-2">Filter</span>
         <ListFilterPlus class="transition-transform group-hover:translate-y-1" size={16} />
       </Button>
-      {#if isDropdownOpen}
-        <div
-          class="bg-opacity-50 fixed inset-0 z-40 bg-black md:hidden"
-          onclick={toggleDropdown}
-        ></div>
-        <div class="relative top-full left-0 z-50 mt-2 w-full md:absolute md:w-96">
-          <FilterDropdown
-            {networks}
-            {protocols}
-            {projects}
-            on:close={toggleDropdown}
-            on:add={addFilter}
-            onDismiss={() => (isDropdownOpen = false)}
-          />
-        </div>
-      {/if}
     </div>
   </div>
 </div>

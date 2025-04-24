@@ -1,17 +1,23 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
-  import { createEventDispatcher, onMount, afterUpdate } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
 
-  // Props
-  export let suggestions: Array<{
-    value: string;
-    displayText: string;
-    logo?: string;
-    description?: string;
-    metadata?: any;
-  }>;
-  export let onDismiss: () => void = () => {}; // New prop for handling dismissal
-  export let searchValue: string = ''; // New prop to track current search value
+  type Props = {
+    suggestions: Array<{
+      value: string;
+      displayText: string;
+      logo?: string;
+      description?: string;
+      metadata?: any;
+    }>;
+    onDismiss: () => void;
+    searchValue: string;
+  };
+
+  let {
+    suggestions = [],
+    onDismiss = () => {}, // New prop for handling dismissal
+    searchValue = '' // New prop to track current search value
+  } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -20,11 +26,11 @@
   let suggestionsContainer: HTMLElement;
 
   // on selectedIndex update, notify parent component
-  $: {
+  $effect(() => {
     if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
       dispatch('update', { value: suggestions[selectedIndex].value });
     }
-  }
+  });
 
   // Select suggestion
   function selectSuggestion(suggestion: any) {
@@ -66,7 +72,7 @@
         event.preventDefault();
         event.stopPropagation();
         if (searchValue === '') {
-          // onDismiss();
+          onDismiss();
         } else {
           searchValue = '';
         }
@@ -75,14 +81,14 @@
   }
 
   // Reset selected index when suggestions change
-  $: {
+  $effect(() => {
     if (suggestions) {
       selectedIndex = -1;
     }
-  }
+  });
 
   // Scroll selected item into view after selectedIndex changes
-  afterUpdate(() => {
+  $effect(() => {
     if (selectedIndex >= 0 && suggestionsContainer) {
       const selectedElement = suggestionsContainer.querySelector(`.option-${selectedIndex}`);
       if (selectedElement) {
@@ -117,7 +123,7 @@
 </script>
 
 <div
-  class="suggestions scrollbar-thin max-h-60 w-full overflow-y-auto px-0"
+  class="suggestions scrollbar-thin h-[300px] md:max-h-[300px] w-full overflow-y-auto px-0"
   bind:this={suggestionsContainer}
 >
   <div class="flex flex-col gap-2 py-2">
