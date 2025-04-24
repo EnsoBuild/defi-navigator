@@ -17,6 +17,8 @@
   import { page } from '$app/state';
   import Nav from './Nav.svelte';
   import { fade } from 'svelte/transition';
+  import Button from './core/Button.svelte';
+  import { PlayIcon } from '@lucide/svelte';
 
   // State
   let didMount = $state(false);
@@ -24,7 +26,7 @@
   let protocols: Protocol[] = $state([]);
   let projects: ProjectData[] = $state([]);
   let networks: Network[] = $state([]);
-  let isLoading = $state(true);
+  let isLoading = $state(false);
   let isLoadingMore = $state(false);
   let error: string | null = $state(null);
   let showOverlay = $state(false);
@@ -60,11 +62,22 @@
         error = `Failed to initialize: ${err.message}`;
       });
     didMount = true;
+    
+    // Add keyboard event listener for CMD+Enter or CTRL+Enter
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        executeSearch();
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    
     // Return the cleanup function synchronously
     return () => {
       if (observer) {
         observer.disconnect();
       }
+      document.removeEventListener('keydown', handleKeyDown);
     };
   });
 
@@ -81,6 +94,11 @@
       isLoading = false;
     }
   }, 1200);
+
+  // Execute search function (called by the Run button or keyboard shortcuts)
+  function executeSearch() {
+    loadTokens(tokenParams);
+  }
 
   async function loadProtocols() {
     try {
@@ -152,13 +170,7 @@
       },
       filter: async (params) => {
         console.debug('Filter applied:', params);
-
-        // When we have a complete filter, update the token params and load tokens
-        if (_.isEqual(params, tokenParams)) {
-          return;
-        }
         tokenParams = params;
-        loadTokens(params);
       }
     });
   }
@@ -225,24 +237,48 @@
     {#if didMount}
     <div class="fixed w-full bottom-0 left-0 right-0 z-10 mx-auto pb-5 bg-bg-secondary border-t border-brdr-light py-4 px-6 flex items-center justify-between">
         {#if filterView === 'cli'}
-          <TokenSearch
-            on:input={handleSearchInput}
-            on:searchResults={handleSearchResults}
-            {protocols}
-            {networks}
-            {projects}
-            tokenParams={initialTokenParams}
-            {onSwitch}
-          />
+          <div class="flex w-full items-center gap-3">
+            <div class="flex-grow">
+              <TokenSearch
+                on:input={handleSearchInput}
+                on:searchResults={handleSearchResults}
+                {protocols}
+                {networks}
+                {projects}
+                tokenParams={initialTokenParams}
+                {onSwitch}
+              />
+            </div>
+            <Button
+              onclick={executeSearch}
+              size="sm"
+              aria-label="Run search (CMD+Enter/CTRL+Enter)"
+              title="Run search (CMD+Enter/CTRL+Enter)"
+            >
+              <PlayIcon size={16} />
+            </Button>
+          </div>
         {:else}
-          <FilterBuilder
-            {networks}
-            {protocols}
-            on:filter={handleFilter}
-            {projects}
-            tokenParams={initialTokenParams}
-            {onSwitch}
-          />
+          <div class="flex w-full items-center gap-3">
+            <div class="flex-grow">
+              <FilterBuilder
+                {networks}
+                {protocols}
+                on:filter={handleFilter}
+                {projects}
+                tokenParams={initialTokenParams}
+                {onSwitch}
+              />
+            </div>
+            <Button
+              onclick={executeSearch}
+              size="sm"
+              aria-label="Run search (CMD+Enter/CTRL+Enter)"
+              title="Run search (CMD+Enter/CTRL+Enter)"
+            >
+              <PlayIcon size={16} />
+            </Button>
+          </div>
         {/if}
       </div>
     {/if}
