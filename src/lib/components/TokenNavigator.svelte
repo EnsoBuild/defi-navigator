@@ -3,6 +3,9 @@
   import { onMount } from 'svelte';
   import { parseFilterQuery } from '../search/parser';
   import type { ProjectData, TokenData, TokenParams } from '../types/api';
+  // Change this import line
+  import { Tween } from 'svelte/motion';
+  // To this (using only tweened)
 
   import FilterBuilder from '$lib/filters/FilterBuilder.svelte';
   import type { Network, Protocol, Token } from '$lib/types/api';
@@ -15,10 +18,11 @@
   import { parseShareableUrl } from '$lib/search/url';
 
   import { page } from '$app/state';
-  import Nav from './Nav.svelte';
+  import { PlayIcon } from '@lucide/svelte';
   import { fade } from 'svelte/transition';
   import Button from './core/Button.svelte';
-  import { PlayIcon } from '@lucide/svelte';
+  import Nav from './Nav.svelte';
+  import { linear } from 'svelte/easing';
 
   // State
   let didMount = $state(false);
@@ -31,6 +35,8 @@
   let error: string | null = $state(null);
   let showOverlay = $state(false);
   let selectedToken: TokenData | null = $state(null);
+  let loadingProgress = new Tween(0, { duration: 400, easing: linear });
+  let loaderInterval: ReturnType<typeof setInterval> | null = $state(null);
 
   let initialTokenParams: TokenParams = $state({});
 
@@ -62,20 +68,23 @@
         error = `Failed to initialize: ${err.message}`;
       });
     didMount = true;
-    
+
     // Add keyboard event listener for CMD+Enter or CTRL+Enter
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
         executeSearch();
       }
     };
-    
+
     document.addEventListener('keydown', handleKeyDown);
-    
+
     // Return the cleanup function synchronously
     return () => {
       if (observer) {
         observer.disconnect();
+      }
+      if (loaderInterval) {
+        clearInterval(loaderInterval);
       }
       document.removeEventListener('keydown', handleKeyDown);
     };
@@ -85,15 +94,37 @@
     try {
       isLoading = true;
       error = null;
+
+      // Start progress animation
+      loadingProgress.set(0);
+      if (loaderInterval) clearInterval(loaderInterval);
+      loadingProgress.set(90, { duration: 2000 });
+
       const result = await getTokenData(params);
       tokens = result;
+
+      // Complete the progress when data is loaded
+      loadingProgress.set(100);
+
+      setTimeout(() => {
+        if (loaderInterval) {
+          clearInterval(loaderInterval);
+          loaderInterval = null;
+        }
+        loadingProgress.set(0, { duration: 0 }); // Reset without animation
+      }, 500); // Keep loader visible briefly after completion
     } catch (err) {
       error = `Failed to load tokens: ${(err as Error).message}`;
       tokens = [];
+      loadingProgress.set(0, { duration: 0 }); // Reset without animation
+      if (loaderInterval) {
+        clearInterval(loaderInterval);
+        loaderInterval = null;
+      }
     } finally {
       isLoading = false;
     }
-  }, 1200);
+  }, 100);
 
   // Execute search function (called by the Run button or keyboard shortcuts)
   function executeSearch() {
@@ -235,7 +266,16 @@
     />
 
     {#if didMount}
-    <div class="fixed w-full bottom-0 left-0 right-0 z-10 mx-auto pb-5 bg-bg-secondary border-t border-brdr-light py-4 px-6 flex items-center justify-between">
+      <div
+        class="bg-bg-secondary border-brdr-light fixed right-0 bottom-0 left-0 z-10 mx-auto flex w-full items-center justify-between border-t px-6 py-4 pb-5"
+      >
+        {#if isLoading || loadingProgress.current > 0}
+          <div
+            class="bg-primary shadow-primary/50 absolute top-0 left-0 h-[1px] py-[1px] transition-all duration-300 ease-out"
+            style="width: {loadingProgress.current}%;"
+            transition:fade={{ duration: 300 }}
+          ></div>
+        {/if}
         {#if filterView === 'cli'}
           <div class="flex w-full items-center gap-3">
             <div class="flex-grow">

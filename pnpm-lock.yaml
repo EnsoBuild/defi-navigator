@@ -55,7 +55,7 @@ importers:
         specifier: ^4.1.4
         version: 4.1.4
       typescript:
-        specifier: ^5.0.0
+        specifier: ^5.5.0
         version: 5.8.3
       vite:
         specifier: ^6.2.5
