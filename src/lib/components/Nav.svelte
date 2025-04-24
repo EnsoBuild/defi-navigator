@@ -18,7 +18,7 @@
     Enso <span
       class="accent from-primary to-primary-hover bg-gradient-to-r bg-clip-text text-transparent"
       >DeFi</span
-    > Explorer
+    > Navigator
   </h1>
   <div class="bg-bg-tertiary flex overflow-hidden rounded-md">
     <a
