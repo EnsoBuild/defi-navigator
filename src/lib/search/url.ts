@@ -54,6 +54,9 @@ export function parseShareableUrl(url: string): TokenParams {
   
   const underlyingTokensExactValues = searchParams.getAll('underlyingTokensExact[]');
   if (underlyingTokensExactValues.length) params.underlyingTokensExact = underlyingTokensExactValues as MultiAddress;
+
+  const primaryAddress = searchParams.getAll('primaryAddress[]');
+  if (primaryAddress.length) params.primaryAddress = underlyingTokensExactValues as MultiAddress;
   
   // Handle primitive types
   if (searchParams.has('apyFrom')) params.apyFrom = Number(searchParams.get('apyFrom'));

@@ -9,7 +9,7 @@ const AUTH_TOKEN: string = '56b3d1f4-5c59-4fc1-8998-16d001e277bc';
  * @returns Promise with token data
  */
 export async function getTokenData(params: TokenParams): Promise<Token[]> {
-  console.debug("API", params)
+  console.log("API", params)
   try {
     // Build query parameters
     const queryParams = new URLSearchParams();
@@ -40,6 +40,14 @@ export async function getTokenData(params: TokenParams): Promise<Token[]> {
       const tokens = Array.isArray(params.underlyingTokensExact) ? params.underlyingTokensExact : [params.underlyingTokensExact];
       tokens.forEach(token => {
         queryParams.append('underlyingTokensExact', token);
+      });
+    }
+
+    // Add exact underlying tokens
+    if (params.primaryAddress) {
+      const tokens = Array.isArray(params.primaryAddress) ? params.primaryAddress : [params.primaryAddress];
+      tokens.forEach(token => {
+        queryParams.append('primaryAddress', token);
       });
     }
     

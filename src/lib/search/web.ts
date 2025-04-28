@@ -52,6 +52,17 @@ export function unpackTokenParams(params: TokenParams): Filter[] {
       filters.push({ key: FilterKey.UNDERLYING_TOKENS_EXACT, value: params.underlyingTokensExact });
     }
   }
+
+    // Handle underlying tokens exact (array values)
+    if (params.primaryAddress) {
+      if (Array.isArray(params.primaryAddress)) {
+        params.primaryAddress.forEach(token => {
+          filters.push({ key: FilterKey.PRIMARY_ADDRESS, value: token });
+        });
+      } else {
+        filters.push({ key: FilterKey.PRIMARY_ADDRESS, value: params.primaryAddress });
+      }
+    }
   
   // Handle primary address (array values according to API)
   if (params.primaryAddress) {

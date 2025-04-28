@@ -1,4 +1,4 @@
-import { type Address, type TokenParams } from './types'; // Adjust import path as needed
+import type { Address, TokenParams } from '$lib/types/api';
 import { FilterKey } from './filters';
 
 /**
@@ -92,6 +92,17 @@ export function generateQueryFromParams(params: TokenParams): string {
       queryParts.push(`${FilterKey.UNDERLYING_TOKENS_EXACT}:${params.underlyingTokensExact}`);
     }
   }
+
+    // Handle underlyingTokensExact
+    if (params.primaryAddress) {
+      if (Array.isArray(params.primaryAddress)) {
+        queryParts.push(
+          formatArrayValues(FilterKey.PRIMARY_ADDRESS, params.primaryAddress)
+        );
+      } else {
+        queryParts.push(`${FilterKey.PRIMARY_ADDRESS}:${params.primaryAddress}`);
+      }
+    }
 
   // Handle APY range
   const apyQuery = formatRangeValues(FilterKey.APY, params);

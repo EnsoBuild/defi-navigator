@@ -1,5 +1,5 @@
 import { FilterKey, type FilterOperator, type ParserCallbacks } from '../search/filters';
-import { type Address, type TokenParams } from '../types/api'; 
+import { type Address, type TokenParams } from '../types/api';
 
 // Constants
 const INEQUALITY_SUPPORTED_KEYS = new Set([FilterKey.APY, FilterKey.TVL]);
@@ -34,43 +34,41 @@ export function isValidFilterKey(key: string): boolean {
  * Check if a string is a prefix of a valid filter key
  */
 export function isFilterKeyPrefix(partial: string): boolean {
-  return Object.values(FilterKey).some(
-    key => key.startsWith(partial) && key !== partial
-  );
+  return Object.values(FilterKey).some((key) => key.startsWith(partial) && key !== partial);
 }
 
 /**
  * Parse a filter token into key, operator, and value components
  */
-export function parseFilterToken(token: string): { 
-  key: string; 
-  operator?: FilterOperator; 
+export function parseFilterToken(token: string): {
+  key: string;
+  operator?: FilterOperator;
   value?: string;
 } {
   // Look for operators
   const colonIndex = token.indexOf(':');
   const greaterThanIndex = token.indexOf('>');
   const lessThanIndex = token.indexOf('<');
-  
+
   // Find the first operator in the string
   const operatorIndices = [
     { index: colonIndex, op: ':' as FilterOperator },
     { index: greaterThanIndex, op: '>' as FilterOperator },
     { index: lessThanIndex, op: '<' as FilterOperator }
-  ].filter(item => item.index !== -1);
-  
+  ].filter((item) => item.index !== -1);
+
   // Sort by index to find the first occurrence
   operatorIndices.sort((a, b) => a.index - b.index);
-  
+
   if (operatorIndices.length === 0) {
     // No operator found, just a potential key
     return { key: token };
   }
-  
+
   const { index, op } = operatorIndices[0];
   const key = token.slice(0, index);
   const value = token.slice(index + 1);
-  
+
   return { key, operator: op, value: value.length > 0 ? value : undefined };
 }
 
@@ -128,6 +126,19 @@ export function applyFilterToParams(
         }
       }
       break;
+    case FilterKey.PRIMARY_ADDRESS:
+      if (operator === ':') {
+        if (params.primaryAddress) {
+          if (Array.isArray(params.primaryAddress)) {
+            params.primaryAddress = [...params.primaryAddress, value as Address];
+          } else {
+            params.primaryAddress = [params.primaryAddress, value as Address];
+          }
+        } else {
+          params.primaryAddress = value as Address;
+        }
+      }
+      break;
     case FilterKey.APY:
       if (supportsInequality(key)) {
         const numValue = parseFloat(value);
@@ -182,35 +193,38 @@ export function applyFilterToParams(
       }
       break;
   }
-  
+
   return params;
 }
 
 /**
  * Parse a filter query string and invoke appropriate callbacks
  */
-export function parseFilterQuery(query: string, callbacks: ParserCallbacks = {}): TokenParams | null {
+export function parseFilterQuery(
+  query: string,
+  callbacks: ParserCallbacks = {}
+): TokenParams | null {
   if (!query || query.trim() === '') {
     return null;
   }
-  
+
   const tokens = query.trim().split(/\s+/);
 
-  let params: TokenParams = { chainId: 1 }; // Default chainId
+  let params: TokenParams = {  }; // Default chainId
   let validFilterFound = false;
-  
+
   for (const token of tokens) {
     const { key, operator, value } = parseFilterToken(token);
-    
+
     if (!key) continue;
-    
+
     if (isValidFilterKey(key)) {
       const filterKey = key as FilterKey;
-      
+
       if (operator && value) {
         // Complete filter expression
         if (
-          (operator === ':') || 
+          operator === ':' ||
           (supportsInequality(filterKey) && (operator === '>' || operator === '<'))
         ) {
           params = applyFilterToParams(params, filterKey, operator, value);
@@ -234,11 +248,11 @@ export function parseFilterQuery(query: string, callbacks: ParserCallbacks = {})
       }
     }
   }
-  
+
   if (validFilterFound && callbacks.filter) {
     callbacks.filter(params);
   }
-  
+
   return validFilterFound ? params : null;
 }
 
@@ -247,44 +261,48 @@ export function parseFilterQuery(query: string, callbacks: ParserCallbacks = {})
  */
 export function deserializeTokenParams(params: TokenParams): string {
   if (!params) return '';
-  
+
   const filters: string[] = [];
-  
+
   // Handle address filter
   if (params.address) {
     if (Array.isArray(params.address)) {
-      params.address.forEach(addr => {
+      params.address.forEach((addr) => {
         filters.push(`${FilterKey.ADDRESS}:${addr}`);
       });
     } else {
       filters.push(`${FilterKey.ADDRESS}:${params.address}`);
     }
   }
-  
+
   // Handle underlying tokens
   if (params.underlyingTokens) {
     if (Array.isArray(params.underlyingTokens)) {
-      params.underlyingTokens.forEach(token => {
+      params.underlyingTokens.forEach((token) => {
         filters.push(`${FilterKey.UNDERLYING_TOKENS}:${token}`);
       });
     } else {
       filters.push(`${FilterKey.UNDERLYING_TOKENS}:${params.underlyingTokens}`);
     }
   }
-  
+
   // Handle underlying tokens exact
   if (params.underlyingTokensExact) {
     if (Array.isArray(params.underlyingTokensExact)) {
-      params.underlyingTokensExact.forEach(token => {
+      params.underlyingTokensExact.forEach((token) => {
         filters.push(`${FilterKey.UNDERLYING_TOKENS_EXACT}:${token}`);
       });
     } else {
       filters.push(`${FilterKey.UNDERLYING_TOKENS_EXACT}:${params.underlyingTokensExact}`);
     }
   }
-  
+
   // Handle APY range
-  if (params.apyFrom !== undefined && params.apyTo !== undefined && params.apyFrom === params.apyTo) {
+  if (
+    params.apyFrom !== undefined &&
+    params.apyTo !== undefined &&
+    params.apyFrom === params.apyTo
+  ) {
     filters.push(`${FilterKey.APY}:${params.apyFrom}`);
   } else {
     if (params.apyFrom !== undefined) {
@@ -294,9 +312,13 @@ export function deserializeTokenParams(params: TokenParams): string {
       filters.push(`${FilterKey.APY}<${params.apyTo}`);
     }
   }
-  
+
   // Handle TVL range
-  if (params.tvlFrom !== undefined && params.tvlTo !== undefined && params.tvlFrom === params.tvlTo) {
+  if (
+    params.tvlFrom !== undefined &&
+    params.tvlTo !== undefined &&
+    params.tvlFrom === params.tvlTo
+  ) {
     filters.push(`${FilterKey.TVL}:${params.tvlFrom}`);
   } else {
     if (params.tvlFrom !== undefined) {
@@ -306,26 +328,26 @@ export function deserializeTokenParams(params: TokenParams): string {
       filters.push(`${FilterKey.TVL}<${params.tvlTo}`);
     }
   }
-  
+
   // Handle protocol slug
   if (params.protocolSlug) {
     filters.push(`${FilterKey.PROTOCOL}:${params.protocolSlug}`);
   }
-  
+
   // Handle project
   if (params.project) {
     filters.push(`${FilterKey.PROJECT}:${params.project}`);
   }
-  
+
   // Handle type
   if (params.type) {
     filters.push(`${FilterKey.TYPE}:${params.type}`);
   }
-  
+
   // Handle chain ID (only if not the default value of 1)
   if (params.chainId !== undefined && params.chainId !== 1) {
     filters.push(`${FilterKey.CHAIN_ID}:${params.chainId}`);
   }
-  
+
   return filters.join(' ');
 }

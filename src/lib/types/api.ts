@@ -249,7 +249,7 @@ export interface TokenParams {
   underlyingTokensExact?: MultiAddress;
 
   /** Ethereum addresses for contract interaction of defi tokens */
-  primaryAddress?: string[];
+  primaryAddress?: MultiAddress;
 
   /** Ethereum addresses of the tokens */
   address?: MultiAddress;

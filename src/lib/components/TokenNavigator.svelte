@@ -72,6 +72,7 @@
     // Add keyboard event listener for CMD+Enter or CTRL+Enter
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        
         executeSearch();
       }
     };
@@ -128,6 +129,7 @@
 
   // Execute search function (called by the Run button or keyboard shortcuts)
   function executeSearch() {
+    console.log('Executing search with params:', tokenParams);
     loadTokens(tokenParams);
   }
 
@@ -207,7 +209,7 @@
   }
 
   function handleSearchResults(event: CustomEvent) {
-    // This might be used for handling search results from an external search component
+    console.log('Search results:', event.detail);
   }
 
   function handleOpenDetails(event: CustomEvent<{ token: Token }>) {
@@ -232,6 +234,7 @@
   function onSwitch(view: 'cli' | 'ui') {
     console.log('Switching view to', view);
     filterView = view;
+    initialTokenParams = tokenParams;
   }
 </script>
 
@@ -285,7 +288,8 @@
                 {protocols}
                 {networks}
                 {projects}
-                tokenParams={initialTokenParams}
+                initialTokenParams={initialTokenParams}
+                tokenParams={tokenParams}
                 {onSwitch}
               />
             </div>

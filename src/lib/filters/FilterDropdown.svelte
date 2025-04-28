@@ -44,6 +44,7 @@
     key,
     description: getFilterKeyDescription(key)
   }));
+  console.log('Filter Options:', filterOptions);
 
   // Keep filter options updated when search changes
   run(() => {

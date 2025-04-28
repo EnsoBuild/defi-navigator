@@ -18,7 +18,8 @@ export enum FilterKey {
   PROJECT = 'project',
   TYPE = 'type',
   CHAIN_ID = 'chainId',
-  CHAIN = 'chainId'
+  CHAIN = 'chainId',
+  PRIMARY_ADDRESS = 'primaryAddress'
 }
 
 export type FilterValue = string | { from: number; to: number }

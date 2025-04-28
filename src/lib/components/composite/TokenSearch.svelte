@@ -9,7 +9,7 @@
   import type { TokenParams } from '../../types/api';
   import ShareFiltersButton from '../core/ShareFiltersButton.svelte';
   import SearchHelpDialog from './SearchHelpDialog.svelte';
-  import ModeSwitchButton from '../ModeSwitchButton.svelte';;
+  import ModeSwitchButton from '../ModeSwitchButton.svelte';
   import QuestionIcon from '../core/QuestionIcon.svelte';
   import SuggestionsList from './SuggestionsList.svelte';
 
@@ -19,7 +19,8 @@
     protocols?: Protocol[]; // Protocols data passed from parent
     projects?: ProjectData[]; // Project data passed from parent
     networks?: Network[]; // Networks data passed from parent
-    tokenParams?: TokenParams;
+    initialTokenParams?: TokenParams;
+    tokenParams: TokenParams;
     onSwitch?: (other: 'ui' | 'cli') => void;
   }
 
@@ -28,6 +29,7 @@
     protocols = [],
     projects = [],
     networks = [],
+    initialTokenParams = {},
     tokenParams = {},
     onSwitch = () => {}
   }: Props = $props();
@@ -141,15 +143,16 @@
   // Descriptions for each filter key
   function getFilterKeyDescription(key: string): string {
     const descriptions = {
+      [FilterKey.PROJECT]: 'Project name',
+      [FilterKey.PROTOCOL]: 'Protocol name/slug',
       [FilterKey.ADDRESS]: 'Token address',
+      [FilterKey.CHAIN_ID]: 'Blockchain network ID',
+      [FilterKey.TYPE]: 'Token type (defi or base)',
+      [FilterKey.PRIMARY_ADDRESS]: 'Underlying token address',
       [FilterKey.UNDERLYING_TOKENS]: 'Underlying token address',
       [FilterKey.UNDERLYING_TOKENS_EXACT]: 'Exact underlying token address',
       [FilterKey.APY]: 'Annual percentage yield',
-      [FilterKey.TVL]: 'Total value locked',
-      [FilterKey.PROTOCOL]: 'Protocol name/slug',
-      [FilterKey.PROJECT]: 'Project name',
-      [FilterKey.TYPE]: 'Token type (defi or base)',
-      [FilterKey.CHAIN_ID]: 'Blockchain network ID'
+      [FilterKey.TVL]: 'Total value locked'
     };
 
     return descriptions[key as keyof typeof descriptions] || key;
@@ -225,11 +228,6 @@
     }
   }
 
-  // Show search help
-  function showHelp() {
-    dispatch('showHelp');
-  }
-
   // Focus and blur handlers
   function handleFocus() {
     focused = true;
@@ -249,13 +247,13 @@
   function handleGlobalKeydown(event: KeyboardEvent) {
     if (event.key === '?' || event.key === 'Shift+?') {
       event.preventDefault();
-      showHelp();
+      toggleSearchHelp();
     }
   }
 
   // Initialize suggestions
   onMount(() => {
-    searchInput = deserializeTokenParams(tokenParams);
+    searchInput = deserializeTokenParams(initialTokenParams);
     suggestions = generateSuggestions('');
     inputElement?.focus();
     window.addEventListener('keydown', handleGlobalKeydown);
