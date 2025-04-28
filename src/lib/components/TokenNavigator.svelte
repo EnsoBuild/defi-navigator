@@ -129,7 +129,7 @@
 
   // Execute search function (called by the Run button or keyboard shortcuts)
   function executeSearch() {
-    console.log('Executing search with params:', tokenParams);
+    console.debug('Executing search with params:', tokenParams);
     loadTokens(tokenParams);
   }
 
@@ -209,7 +209,7 @@
   }
 
   function handleSearchResults(event: CustomEvent) {
-    console.log('Search results:', event.detail);
+    console.debug('Search results:', event.detail);
   }
 
   function handleOpenDetails(event: CustomEvent<{ token: Token }>) {
@@ -232,7 +232,7 @@
   }
 
   function onSwitch(view: 'cli' | 'ui') {
-    console.log('Switching view to', view);
+    console.debug('Switching view to', view);
     filterView = view;
     initialTokenParams = tokenParams;
   }

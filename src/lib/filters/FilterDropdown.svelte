@@ -44,7 +44,7 @@
     key,
     description: getFilterKeyDescription(key)
   }));
-  console.log('Filter Options:', filterOptions);
+  console.debug('Filter Options:', filterOptions);
 
   // Keep filter options updated when search changes
   run(() => {
@@ -94,7 +94,7 @@
 
   // Select a filter type
   function selectFilter(key: string) {
-    console.log("Selected filter:", key);
+    console.debug("Selected filter:", key);
     selectedFilter = key;
     filterValue = '';
     showSuggestions = false;
@@ -116,20 +116,20 @@
 
   // Handle suggestion select
   function handleSuggestionSelect(event: CustomEvent<{ value: string }>) {
-    console.log("Handle Suggestion Select", event);
+    console.debug("Handle Suggestion Select", event);
     filterValue = event.detail.value;
     showSuggestions = false;
     addFilter();
   }
 
   function handleSuggestionUpdate(event: CustomEvent) {
-    console.log("Handle Suggestion Update", event);
+    console.debug("Handle Suggestion Update", event);
     filterValueSelected = event.detail.value;
   }
 
   // Handle input change
   function handleInputChange(event: CustomEvent<{ value: string }>) {
-    console.log('Input changed:', event.detail.value);
+    console.debug('Input changed:', event.detail.value);
     const value = event.detail.value;
     filterValue = value;
 
@@ -146,7 +146,7 @@
 
   // Handle search input change
   function handleSearchChange(event: any) {
-    console.log('Search input changed:', event.target.value);
+    console.debug('Search input changed:', event.target.value);
     searchQuery = event.target.value;
   }
 

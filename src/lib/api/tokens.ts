@@ -9,7 +9,7 @@ const AUTH_TOKEN: string = '56b3d1f4-5c59-4fc1-8998-16d001e277bc';
  * @returns Promise with token data
  */
 export async function getTokenData(params: TokenParams): Promise<Token[]> {
-  console.log("API", params)
+  console.debug("API", params)
   try {
     // Build query parameters
     const queryParams = new URLSearchParams();

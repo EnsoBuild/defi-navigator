@@ -9,7 +9,7 @@ import type { TokenParams, MultiAddress } from '../types/api';
  */
 export function createShareableUrl(params: TokenParams, baseUrl = window.location.origin): string {
   const searchParams = new URLSearchParams();
-  console.log(params)
+  console.debug(params)
   // Process each property in TokenParams
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined) {

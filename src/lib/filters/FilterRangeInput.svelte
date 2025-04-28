@@ -25,7 +25,7 @@
 
   // Update values and dispatch change
   function updateValues() {
-    console.log('Update Values', { fromValue, toValue });
+    console.debug('Update Values', { fromValue, toValue });
     dispatch('change', { from: fromValue, to: toValue });
   }
 
