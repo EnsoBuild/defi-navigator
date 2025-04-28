@@ -35,7 +35,7 @@
 
   // Keyboard navigation state
   let activeOptionIndex = $state(-1);
-  let dropdownElement: HTMLElement = $state();
+  let dropdownElement: HTMLElement|undefined = $state();
 
   const dispatch = createEventDispatcher();
 
@@ -426,7 +426,7 @@
     <!-- Filter value input -->
     <div class="px-0 pb-4">
       <div class="mb-2 flex items-center">
-        <button class="btn btn-ghost mr-2 p-1" onclick={() => selectFilter(null)}>
+        <button class="btn btn-ghost mr-2 p-1" onclick={() => selectFilter("")}>
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M15 18L9 12L15 6"

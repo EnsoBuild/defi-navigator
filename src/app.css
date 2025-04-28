@@ -5,8 +5,9 @@ Theme configuration for Enso DeFi Explorer
 */
 @theme {
   /* Color System */
-  --color-primary: #ff3d87; /* Pink accent color */
-  --color-primary-hover: #ff56a9;
+  --color-primary: #ee8649; /* Pink accent color */
+  /* --color-primary: #ff3d87; Pink accent color ff56a9*/
+  --color-primary-hover: #ee8649;
   --color-secondary: #ea3ef7; /* Bright pink accent */
   --color-success: #4ade80;
   --color-success-light: rgba(74, 222, 128, 0.08);
@@ -77,7 +78,7 @@ body {
 }
 
 .btn-primary {
-  @apply bg-primary text-white opacity-80;
+  @apply bg-primary text-white;
 }
 
 .btn-primary:hover:not(:disabled) {
