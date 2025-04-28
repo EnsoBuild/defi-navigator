@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CommandIcon, MousePointerIcon } from '@lucide/svelte';
+  import { CommandIcon, MousePointerIcon, TerminalIcon } from '@lucide/svelte';
   import Button from './core/Button.svelte';
 
   let { current, onSwitch }: { current: 'ui' | 'cli'; onSwitch: (other: 'ui' | 'cli') => void } =
@@ -18,7 +18,7 @@
   >
     <div class="text-xxs flex flex-col items-center gap-1">
       {#if current === 'ui'}
-        <CommandIcon
+        <TerminalIcon
           color="#ffffff"
           size={14}
           class="transition-transform group-hover:-translate-y-1"
