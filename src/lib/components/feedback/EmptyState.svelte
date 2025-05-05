@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Button from '../core/Button.svelte';
   import { createEventDispatcher } from 'svelte';
+  import Button from '../common/Button.svelte';
   
   interface Props {
     message?: string;

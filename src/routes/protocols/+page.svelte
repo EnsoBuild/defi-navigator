@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getProtocols } from '$lib/api/tokens';
-  import Nav from '$lib/components/Nav.svelte';
+  
   import type { Protocol } from '$lib/types/api';
+  import { getProtocols } from '$lib/services/api/tokens';
+  import Nav from '$lib/components/layout/Nav.svelte';
 
   let protocols: Protocol[] = $state([]);
   let loading = $state(true);
@@ -21,7 +22,7 @@
   });
 </script>
 
-<section class="mx-auto max-w-screen-xl pt-5 px-8">
+<section class="mx-auto max-w-screen-xl pb-2 px-8">
   <div class="container mx-auto">
     <div class="mb-4 flex justify-end justify-items-stretch gap-3">
       <Nav />

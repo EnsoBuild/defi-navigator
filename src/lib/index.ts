@@ -3,7 +3,6 @@ export { default as Button } from './components/core/Button.svelte';
 export { default as Card } from './components/core/Card.svelte';
 export { default as Input } from './components/core/Input.svelte';
 export { default as Select } from './components/core/Select.svelte';
-export { default as Badge } from './components/feedback/Badge.svelte';
 export { default as LoadingSpinner } from './components/feedback/LoadingSpinner.svelte';
 export { default as EmptyState } from './components/feedback/EmptyState.svelte';
 export { default as Modal } from './components/layout/Modal.svelte';

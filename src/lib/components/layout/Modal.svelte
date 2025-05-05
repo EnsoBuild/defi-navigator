@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade, scale } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
-  import Button from '../core/Button.svelte';
+  import Button from '../common/Button.svelte';
 
   interface Props {
     show?: boolean;
@@ -46,7 +46,7 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if show}
   <div
@@ -55,6 +55,7 @@
     onclick={handleBackdropClick}
     role="dialog"
     aria-modal="true"
+    tabindex="0"
   >
     <div
       class="bg-bg-secondary rounded-xl w-[90%] max-h-[85vh] overflow-y-auto border border-brdr-light shadow-lg flex flex-col"

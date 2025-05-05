@@ -2,34 +2,34 @@
 
 /* 
 Theme configuration for Enso DeFi Explorer
+Optimized color palette with orange as primary
 */
 @theme {
   /* Color System */
-  --color-primary: #ee8649; /* Pink accent color */
-  /* --color-primary: #ff3d87; Pink accent color ff56a9*/
-  --color-primary-hover: #ee8649;
-  --color-secondary: #ea3ef7; /* Bright pink accent */
-  --color-success: #4ade80;
-  --color-success-light: rgba(74, 222, 128, 0.08);
-  --color-success-border: rgba(74, 222, 128, 0.2);
-  --color-error: #fc8181;
-  --color-error-light: rgba(254, 178, 178, 0.1);
-  --color-error-border: rgba(254, 178, 178, 0.2);
+  --color-primary: #ee8649; /* Orange primary color */
+  --color-primary-hover: #d76735; /* Slightly darker orange hover */
+  --color-secondary: #d76735; /* Pink accent - complementary to orange */
+  --color-accent: #4338ca; /* Deep blue - analogous harmony */
+  --color-success: #10b981; /* Optimized green for better contrast */
+  --color-success-light: rgba(16, 185, 129, 0.08);
+  --color-success-border: rgba(16, 185, 129, 0.2);
+  --color-error: #ef4444; /* Better red for accessibility */
+  --color-error-light: rgba(239, 68, 68, 0.1);
+  --color-error-border: rgba(239, 68, 68, 0.2);
 
   /* Dark Mode Colors */
-  --color-bg-primary: #121212;
+  --color-bg-primary: #0f0f0f; /* Deeper black for better contrast */
   --color-bg-secondary: #1a1a1a;
-  --color-bg-tertiary: #1e1e1e;
-  /* --color-bg-component: #242424; */
-  --color-bg-elevated: #252525;
-  --color-bg-hover: #2a2a2a;
+  --color-bg-tertiary: #242424;
+  --color-bg-elevated: #2d2d2d;
+  --color-bg-hover: #333333;
 
   /* Border Colors */
-  --color-brdr: #121212;
-  --color-brdr-light: #2a2a2a;
+  --color-brdr: #2a2a2a;
+  --color-brdr-light: #404040;
 
   /* Text Colors */
-  --color-text-primary: #f0f0f0;
+  --color-text-primary: #f5f5f5; /* Slightly softer white */
   --color-text-secondary: #d1d1d1;
   --color-text-tertiary: #a0a0a0;
 
@@ -37,7 +37,7 @@ Theme configuration for Enso DeFi Explorer
   --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 15px rgba(234, 62, 247, 0.3);
+  --shadow-glow: 0 0 15px rgba(238, 134, 73, 0.3); /* Orange glow */
 
   /* Typography */
   --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -72,7 +72,6 @@ body {
 }
 
 /* Common Component Classes */
-/* Common Component Classes */
 .btn {
   @apply inline-flex cursor-pointer items-center justify-center rounded-md border-none font-medium transition-all;
 }
@@ -86,11 +85,11 @@ body {
 }
 
 .btn-secondary {
-  @apply bg-bg-secondary border border-brdr-light text-text-primary transition-colors;
+  @apply bg-secondary/10 border border-secondary/30 text-secondary transition-colors;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  @apply border-secondary bg-bg-hover /*-translate-y-0.5*/ shadow-md;
+  @apply border-secondary/50 bg-secondary/20 shadow-md;
 }
 
 .btn.no-translate:hover{
@@ -143,11 +142,11 @@ body {
 }
 
 .form-input:focus {
-  @apply border-primary /*shadow-outline-primary*/ outline-none;
+  @apply border-primary outline-none;
 }
 
 .shadow-outline-primary {
-  box-shadow: 0 0 0 2px rgba(255, 61, 135, 0.2);
+  box-shadow: 0 0 0 2px rgba(238, 134, 73, 0.2);
 }
 
 /* Spinner animation */
@@ -171,7 +170,7 @@ body {
 }
 
 /* Custom gradients */
-.gradient-pink {
+.gradient-orange {
   @apply from-primary to-primary-hover bg-gradient-to-r;
 }
 
@@ -193,7 +192,11 @@ body {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  @apply bg-secondary rounded;
+  @apply bg-secondary/30 rounded;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary/50;
 }
 
 /* Component specific classes */
@@ -222,23 +225,6 @@ body {
   border-left-width: 3px;
 }
 
-.h-0.75 {
-  height: 3px;
-}
-
-.py-15 {
-  padding-top: 3.75rem;
-  padding-bottom: 3.75rem;
-}
-
-.w-4.5 {
-  width: 1.125rem;
-}
-
-.h-4.5 {
-  height: 1.125rem;
-}
-
 /* Animation classes */
 .transition-all-fast {
   @apply transition-all duration-150 ease-in-out;
@@ -265,7 +251,7 @@ body {
 }
 
 .glow {
-  @apply shadow-glow
+  @apply shadow-glow;
 }
 
 .hover-scale {
@@ -283,6 +269,6 @@ body {
 }
 
 .skeleton {
-  @apply from-bg-tertiary via-bg-hover to-bg-tertiary /*bg-200%*/ /*animate-shimmer*/ rounded bg-gradient-to-r;
+  @apply from-bg-tertiary via-bg-hover to-bg-tertiary rounded bg-gradient-to-r;
   animation: shimmer 1.5s infinite;
 }

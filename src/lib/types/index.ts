@@ -2,27 +2,27 @@
  * Core type definitions for the application
  */
 
-import type { TokenParams } from "@ensofinance/sdk";
-
+import type { Address, TokenParams } from './api';
 
 // Filter and Search related types
 export enum FilterKey {
   ADDRESS = 'address',
-  UNDERLYING_TOKENS = 'underlying',
-  UNDERLYING_TOKENS_EXACT = 'underlyingExact',
+  UNDERLYING_TOKENS = 'underlyingTokens',
+  UNDERLYING_TOKENS_EXACT = 'underlyingTokensExact',
   APY_FROM = 'apyFrom',
   APY_TO = 'apyTo',
   TVL_FROM = 'tvlFrom',
   TVL_TO = 'tvlTo',
-  PROTOCOL = 'protocolSlug',
+  APY = 'apy',
+  TVL = 'tvl',
+  PROTOCOL_SLUG = 'protocolSlug',
   PROJECT = 'project',
   TYPE = 'type',
   CHAIN_ID = 'chainId',
-  CHAIN = 'chainId',
   PRIMARY_ADDRESS = 'primaryAddress'
 }
 
-export type FilterValue = string | { from: number; to: number }
+export type FilterValue = Address | string | { from: number; to: number };
 
 export type FilterOperator = ':' | '>' | '<';
 
@@ -45,3 +45,8 @@ export interface Suggestion {
   logo?: string;
   metadata?: any;
 }
+
+export type FilterItem = {
+  key: string;
+  value: FilterValue;
+};

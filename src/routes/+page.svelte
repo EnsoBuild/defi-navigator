@@ -1,8 +1,9 @@
 <script>
-  import TokenNavigator from "$lib/components/TokenNavigator.svelte";
+  import TokenExplorer from "$lib/components/tokens/TokenExplorer.svelte";
+
 </script>
 
 <div class="min-h-screen bg-bg-primary">
-  <TokenNavigator/>
+  <TokenExplorer/>
 </div>
 
