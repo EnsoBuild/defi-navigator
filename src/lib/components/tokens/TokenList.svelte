@@ -1,7 +1,7 @@
 <script lang="ts">
   import { clearFilters } from '$lib/stores/filterStore';
   import { isLoading, selectToken, tokens } from '$lib/stores/tokenStore';
-  import type { TokenData } from '$lib/types/api';
+  import type { TokenData } from '$lib/types';
 
   import EmptyState from '$lib/components/feedback/EmptyState.svelte';
   import LoadingSpinner from '$lib/components/feedback/LoadingSpinner.svelte';

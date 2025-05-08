@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createShareableUrl } from '$lib/utils/url';
-  import type { TokenParams } from '$lib/types/api';
+  import type { TokenParams } from '$lib/types';
   import { fade } from 'svelte/transition';
   import { Share } from '@lucide/svelte';
   import Button from '$lib/components/common/Button.svelte';
@@ -37,7 +37,7 @@
     class="btn btn-sm border-brdr-light group flex items-center gap-1.5 border! text-white"
     on:click={handleClick}
   >
-    <div class="flex flex-col text-xxs items-center gap-1">
+    <div class="flex flex-col text-xs items-center gap-1">
       <Share color="#ffffff" size={14} class="transition-transform group-hover:-translate-y-1" />
       Share
     </div>

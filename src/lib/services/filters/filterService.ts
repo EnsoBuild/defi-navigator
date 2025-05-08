@@ -5,7 +5,7 @@ import {
   type FilterItem,
   type Suggestion
 } from '$lib/types';
-import type { TokenParams, Network, Protocol, ProjectData, Address } from '$lib/types/api';
+import type { TokenParams, Network, Protocol, Project, Address } from '$lib/types';
 
 /**
  * Unified FilterService that combines filterEngine and filterSuggestionService
@@ -15,7 +15,7 @@ export class FilterService {
   // Data sources for suggestions
   private networks: Network[] = [];
   private protocols: Protocol[] = [];
-  private projects: ProjectData[] = [];
+  private projects: Project[] = [];
 
   // Constants for filter operations
   private RANGE_FILTER_KEYS = new Set([FilterKey.APY, FilterKey.TVL]);
@@ -44,7 +44,7 @@ export class FilterService {
   };
 
   // Update data sources for suggestions
-  updateDataSources(networks?: Network[], protocols?: Protocol[], projects?: ProjectData[]) {
+  updateDataSources(networks?: Network[], protocols?: Protocol[], projects?: Project[]) {
     if (networks) this.networks = networks;
     if (protocols) this.protocols = protocols;
     if (projects) this.projects = projects;

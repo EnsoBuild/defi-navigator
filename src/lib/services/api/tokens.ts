@@ -1,120 +1,18 @@
-import type { Network, ProjectData, Protocol, Token, TokenParams } from '$lib/types/api';
+import type { Network, Project, Protocol, TokenData, TokenParams } from '$lib/types';
+import { EnsoClient } from '@ensofinance/sdk';
 
 const API_BASE_URL: string = 'https://api.enso.finance/api/v1';
 const AUTH_TOKEN: string = '56b3d1f4-5c59-4fc1-8998-16d001e277bc';
+
+const ensoClient = new EnsoClient({ baseURL: API_BASE_URL, apiKey: AUTH_TOKEN });
 
 /**
  * Fetches token data from the Enso API
  * @param params TokenParams filters
  * @returns Promise with token data
  */
-export async function getTokenData(params: TokenParams): Promise<Token[]> {
-  try {
-    // Build query parameters
-    const queryParams = new URLSearchParams();
-    
-    // Add chainId
-    if (params.chainId) {
-      queryParams.set('chainId', params.chainId.toString());
-    }
-    
-    // Add token addresses
-    if (params.address) {
-      const addresses = Array.isArray(params.address) ? params.address : [params.address];
-      addresses.forEach(address => {
-        queryParams.append('address', address);
-      });
-    }
-    
-    // Add underlying tokens
-    if (params.underlyingTokens) {
-      const tokens = Array.isArray(params.underlyingTokens) ? params.underlyingTokens : [params.underlyingTokens];
-      tokens.forEach(token => {
-        queryParams.append('underlyingTokens', token);
-      });
-    }
-    
-    // Add exact underlying tokens
-    if (params.underlyingTokensExact) {
-      const tokens = Array.isArray(params.underlyingTokensExact) ? params.underlyingTokensExact : [params.underlyingTokensExact];
-      tokens.forEach(token => {
-        queryParams.append('underlyingTokensExact', token);
-      });
-    }
-
-    // Add primary address
-    if (params.primaryAddress) {
-      const tokens = Array.isArray(params.primaryAddress) ? params.primaryAddress : [params.primaryAddress];
-      tokens.forEach(token => {
-        queryParams.append('primaryAddress', token);
-      });
-    }
-    
-    // Add APY range
-    if (params.apyFrom !== undefined) {
-      queryParams.set('apyFrom', params.apyFrom.toString());
-    }
-    
-    if (params.apyTo !== undefined) {
-      queryParams.set('apyTo', params.apyTo.toString());
-    }
-    
-    // Add TVL range
-    if (params.tvlFrom !== undefined) {
-      queryParams.set('tvlFrom', params.tvlFrom.toString());
-    }
-    
-    if (params.tvlTo !== undefined) {
-      queryParams.set('tvlTo', params.tvlTo.toString());
-    }
-    
-    // Add protocol slug
-    if (params.protocolSlug) {
-      queryParams.set('protocolSlug', params.protocolSlug);
-    }
-    
-    // Add project
-    if (params.project) {
-      queryParams.set('project', params.project);
-    }
-    
-    // Add token type
-    if (params.type) {
-      queryParams.set('type', params.type);
-    }
-    
-    // Add includeMetadata
-    if (params.includeMetadata !== undefined) {
-      queryParams.set('includeMetadata', params.includeMetadata.toString());
-    } else {
-      // Default to true to get full token data
-      queryParams.set('includeMetadata', 'true');
-    }
-    
-    // Add pagination parameters
-    queryParams.set('page', params.page?.toString() || '1');
-    
-    // Make the API request
-    const response = await fetch(`${API_BASE_URL}/tokens?${queryParams.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${AUTH_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    
-    // Return the token data from the pagination structure
-    return data.data as Token[];
-  } catch (error) {
-    console.error('Error fetching token data:', error);
-    throw error;
-  }
+export async function getTokenData(params: TokenParams): Promise<TokenData[]> {
+  return (await ensoClient.getTokenData(params)).data;
 }
 
 /**
@@ -123,55 +21,15 @@ export async function getTokenData(params: TokenParams): Promise<Token[]> {
  * @returns Array of protocol data
  */
 export async function getProtocols(chainId?: number): Promise<Protocol[]> {
-  try {
-    const queryParams = new URLSearchParams();
-    
-    if (chainId) {
-      queryParams.set('chainId', chainId.toString());
-    }
-    
-    const response = await fetch(`${API_BASE_URL}/protocols?${queryParams.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${AUTH_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching protocols:', error);
-    throw error;
-  }
+  return (await ensoClient.getProtocolData({ chainId: chainId || 1 }));
 }
 
 /**
  * Fetches projects that can be used for filtering
  * @returns Array of project data
  */
-export async function getProjects(): Promise<ProjectData[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/projects`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${AUTH_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching projects:', error);
-    throw error;
-  }
+export async function getProjects(): Promise<Project[]> {
+  return await ensoClient.getProjects();
 }
 
 /**
@@ -179,24 +37,7 @@ export async function getProjects(): Promise<ProjectData[]> {
  * @returns Array of network data
  */
 export async function getNetworks(): Promise<Network[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/networks`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${AUTH_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching networks:', error);
-    throw error;
-  }
+  return await ensoClient.getNetworks();
 }
 
 /**
@@ -206,7 +47,7 @@ export async function getNetworks(): Promise<Network[]> {
 export async function fetchReferenceData(): Promise<{
   networks: Network[];
   protocols: Protocol[];
-  projects: ProjectData[];
+  projects: Project[];
 }> {
   try {
     const [networks, protocols, projects] = await Promise.all([
@@ -214,7 +55,7 @@ export async function fetchReferenceData(): Promise<{
       getProtocols(),
       getProjects()
     ]);
-    
+
     return { networks, protocols, projects };
   } catch (error) {
     console.error('Error fetching reference data:', error);

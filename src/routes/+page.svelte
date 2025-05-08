@@ -3,7 +3,7 @@
 
 </script>
 
-<div class="min-h-screen bg-bg-primary">
+<div class="min-h-screen bg-bg-primary mx-auto px-8">
   <TokenExplorer/>
 </div>
 

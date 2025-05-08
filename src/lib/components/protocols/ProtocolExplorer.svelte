@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  
+
   import type { Protocol } from '$lib/types';
   import { getProtocols } from '$lib/services/api/tokens';
   import Input from '$lib/components/common/Input.svelte';
+  import _ from 'lodash';
 
   let protocols: Protocol[] = $state([]);
   let allProtocols: Protocol[] = $state([]);
@@ -37,22 +38,24 @@
     }
 
     const query = searchQuery.toLowerCase();
-    protocols = allProtocols.filter(protocol => 
-      protocol.name?.toLowerCase().includes(query) || 
-      protocol.slug.toLowerCase().includes(query) ||
-      protocol.description?.toLowerCase().includes(query)
+    protocols = allProtocols.filter(
+      (protocol) =>
+        protocol.name?.toLowerCase().includes(query) ||
+        protocol.slug.toLowerCase().includes(query) ||
+        protocol.description?.toLowerCase().includes(query)
     );
   }
+  $effect(()=>{
+    if (protocols.length > 0) {
+      protocols = _.orderBy(protocols, ['chains.length', 'name'], ['desc', 'asc']);
+    } 
+  })
 </script>
 
-<div class="flex justify-between items-center mb-6">
+<div class="mb-6 flex items-center justify-between">
   <h1 class="text-2xl font-bold">DeFi Protocols</h1>
   <div class="w-64">
-    <Input 
-      placeholder="Search protocols..." 
-      value={searchQuery} 
-      oninput={handleSearch}
-    />
+    <Input placeholder="Search protocols..." value={searchQuery} oninput={handleSearch} />
   </div>
 </div>
 
@@ -73,9 +76,12 @@
       {searchQuery ? `No protocols found matching "${searchQuery}"` : 'No protocols found'}
     </p>
     {#if searchQuery}
-      <button 
+      <button
         class="btn btn-primary mt-4"
-        onclick={() => { searchQuery = ''; filterProtocols(); }}
+        onclick={() => {
+          searchQuery = '';
+          filterProtocols();
+        }}
       >
         Clear Search
       </button>
@@ -84,14 +90,15 @@
 {:else}
   <div class="mb-4">
     <p class="text-text-secondary">
-      Showing {protocols.length} {protocols.length === 1 ? 'protocol' : 'protocols'}
+      Showing {protocols.length}
+      {protocols.length === 1 ? 'protocol' : 'protocols'}
       {searchQuery ? `matching "${searchQuery}"` : ''}
     </p>
   </div>
   <div class="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
     {#each protocols as protocol}
       <div class="card flex h-full flex-col p-6" aria-label="${protocol.name || protocol.slug}">
-        <div class="mb-1 flex items-start">
+        <div class="mb-1 flex items-end">
           {#if protocol.logosUri && protocol.logosUri.length > 0}
             <img
               src={protocol.logosUri[0]}
@@ -100,9 +107,7 @@
               loading="lazy"
             />
           {:else}
-            <div
-              class="bg-bg-secondary mr-4 flex h-12 w-12 items-center justify-center rounded-lg"
-            >
+            <div class="bg-bg-secondary mr-4 flex h-12 w-12 items-center justify-center rounded-lg">
               <span class="text-secondary text-2xl font-bold">
                 {protocol.slug.charAt(0).toUpperCase()}
               </span>
@@ -115,25 +120,19 @@
         <div class="mb-4 flex items-center">
           <div>
             <div class="mt-1 flex flex-wrap gap-2">
-              <!-- {#if !!protocol.chains}
-                {#each protocol.chains as chain}
+              {#if !!protocol.chains}
+                {#each _.orderBy(protocol.chains, "name.length") as chain}
                   <a
-                    class="bg-bg-secondary text-text-tertiary hover-glow rounded-full px-2 py-1 text-xs"
-                    href="/?chain={chain.id}&protocol={protocol.slug}"
+                    class="bg-bg-secondary text-text-tertiary hover-glow rounded-full px-2 py-1 text-xxs"
+                    href="/?chainId={chain.id}&protocolSlug={protocol.slug}"
                   >
                     {chain.name}
                   </a>
                 {/each}
-              {/if} -->
+              {/if}
             </div>
           </div>
         </div>
-
-        {#if protocol.description}
-          <p class="text-text-secondary mb-4 line-clamp-3 text-sm">
-            {protocol.description}
-          </p>
-        {/if}
 
         <!-- Spacer to push content to bottom -->
         <div class="flex-grow"></div>

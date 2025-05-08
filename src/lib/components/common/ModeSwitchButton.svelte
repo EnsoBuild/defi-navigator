@@ -16,7 +16,7 @@
     class="btn btn-sm border-brdr-light group flex items-center gap-1.5 border! text-white"
     on:click={switchTo}
   >
-    <div class="text-xxs flex flex-col items-center gap-1">
+    <div class="text-xs flex flex-col items-center gap-1">
       {#if current === 'ui'}
         <TerminalIcon
           color="#ffffff"

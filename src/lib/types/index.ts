@@ -2,7 +2,7 @@
  * Core type definitions for the application
  */
 
-import type { Address, TokenParams } from './api';
+import type { TokenParams, Address } from '@ensofinance/sdk';
 
 // Filter and Search related types
 export enum FilterKey {
@@ -50,3 +50,7 @@ export type FilterItem = {
   key: string;
   value: FilterValue;
 };
+
+export type { TokenParams, Address };
+
+export type { TokenData, Network, Project, ProtocolData as Protocol } from '@ensofinance/sdk';

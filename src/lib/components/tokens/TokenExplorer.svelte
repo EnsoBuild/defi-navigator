@@ -3,16 +3,15 @@
   import { setupSearchExecuteShortcut } from '$lib/utils/keyboard';
   import { parseShareableUrl } from '$lib/utils/url';
   import { onMount } from 'svelte';
-  // Import stores
+// Import stores
   import { executeSearch, initializeFilters } from '$lib/stores/filterStore';
-  import { clearSelectedToken, error, selectedToken } from '$lib/stores/tokenStore';
-  // Import components
+  import { error, selectedToken } from '$lib/stores/tokenStore';
+// Import components
   import FilterBar from '$lib/components/layout/FilterBar.svelte';
   import Nav from '$lib/components/layout/Nav.svelte';
-  import type { TokenData } from '$lib/types/api';
   import TokenDetails from './TokenDetails.svelte';
   import TokenList from './TokenList.svelte';
-  // Import services
+// Import services
   import { getNetworks, getProjects, getProtocols } from '$lib/services/api/tokens';
   import { filterService } from '$lib/services/filters/filterService';
 
@@ -63,7 +62,7 @@
   />
 </svelte:head>
 
-<div class="token-explorer relative mx-auto max-w-screen-xl px-8">
+<div>
   <header class="explorer-header mb-7">
     <Nav />
     {#if $error}

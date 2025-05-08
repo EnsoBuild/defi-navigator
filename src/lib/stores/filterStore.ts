@@ -1,7 +1,6 @@
-import { derived, writable, get } from 'svelte/store';
-import type { FilterKey, FilterValue, FilterItem } from '$lib/types';
-import type { TokenParams } from '$lib/types/api';
 import { filterService } from '$lib/services/filters/filterService';
+import type { FilterKey, FilterValue, TokenParams } from '$lib/types';
+import { derived, get, writable } from 'svelte/store';
 import { loadTokens } from './tokenStore';
 
 // Core state

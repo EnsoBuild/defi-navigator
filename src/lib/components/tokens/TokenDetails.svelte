@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { Token } from '$lib/types/api';
+  import type { TokenData } from '$lib/types';
 
   import Modal from '$lib/components/layout/Modal.svelte';
   import TokenLogo from '$lib/components/tokens/TokenLogo.svelte';
@@ -11,7 +10,7 @@
   import { clearSelectedToken, selectToken } from '$lib/stores/tokenStore';
 
   interface Props {
-    token: Token;
+    token: TokenData;
     showOverlay?: boolean;
   }
 

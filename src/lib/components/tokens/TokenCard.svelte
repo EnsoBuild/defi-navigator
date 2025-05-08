@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import type { Token } from '$lib/types/api';
+
+  import type { TokenData } from '$lib/types';
   import Card from '$lib/components/common/Card.svelte';
 
   import ChainBadge from '$lib/components/tokens/ChainBadge.svelte';
   import TokenLogo from '$lib/components/tokens/TokenLogo.svelte';
-  import type { TokenData } from '@ensofinance/sdk';
+
 
   interface Props {
-    token: Token;
+    token: TokenData;
     hoverEffect?: 'lift' | 'glow' | 'scale';
     onOpenDetails: (token: TokenData) => void;
   }
