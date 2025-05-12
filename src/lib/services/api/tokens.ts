@@ -21,7 +21,7 @@ export async function getTokenData(params: TokenParams): Promise<TokenData[]> {
  * @returns Array of protocol data
  */
 export async function getProtocols(chainId?: number): Promise<Protocol[]> {
-  return (await ensoClient.getProtocolData({ chainId: chainId || 1 }));
+  return await ensoClient.getProtocolData({ chainId });
 }
 
 /**
