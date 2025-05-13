@@ -1,19 +1,23 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { BugIcon, CoinsIcon, GithubIcon, NavigationIcon, ToyBrickIcon } from '@lucide/svelte';
   import { onMount } from 'svelte';
 
-  let currentPage = $state('tokens');
+  let currentPage = $state('projects');
 
   $effect.pre(() => {
     const pathname = page.url.pathname;
-    if (pathname.includes('/projects')) {
-      currentPage = 'projects';
-    } else if (pathname.includes('/protocols')) {
+    if (pathname.includes('/protocols')) {
       // Redirect old protocol routes to projects
       window.location.href = '/projects';
-    } else {
+    } else if (pathname.includes('/projects')) {
+      currentPage = 'projects';
+    } else if (pathname.includes('/tokens')) {
       currentPage = 'tokens';
+    } else {
+      // Default to projects (including root path '/')
+      currentPage = 'projects';
     }
   });
 
@@ -38,7 +42,7 @@
         class="btn {currentPage === 'tokens'
           ? 'btn-primary'
           : 'btn-ghost'} btn-md no-translate rounded-none! border-0 px-4"
-        href="/"
+        href="/tokens"
       >
         <CoinsIcon size={16} />
         <span class="ml-2">Tokens</span>
