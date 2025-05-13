@@ -1,14 +1,20 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
-  import { onMount } from 'svelte';
   import { page } from '$app/state';
-  import { GithubIcon, Telescope } from '@lucide/svelte';
+  import { BugIcon, CoinsIcon, GithubIcon, NavigationIcon, ToyBrickIcon } from '@lucide/svelte';
+  import { onMount } from 'svelte';
 
   let currentPage = $state('tokens');
 
-  run(() => {
-    currentPage = page.url.pathname.indexOf('/protocols') !== -1 ? 'protocols' : 'tokens';
+  $effect.pre(() => {
+    const pathname = page.url.pathname;
+    if (pathname.includes('/projects')) {
+      currentPage = 'projects';
+    } else if (pathname.includes('/protocols')) {
+      // Redirect old protocol routes to projects
+      window.location.href = '/projects';
+    } else {
+      currentPage = 'tokens';
+    }
   });
 
   onMount(() => {});
@@ -19,20 +25,32 @@
   <div class="flex w-full items-center justify-center">
     <div class="bg-bg-tertiary flex overflow-hidden rounded-md">
       <a
+        class="btn {currentPage === 'projects'
+          ? 'btn-primary'
+          : 'btn-ghost'} btn-md no-translate rounded-none! border-0 px-4"
+        href="/projects"
+      >
+        <ToyBrickIcon size={16} />
+        <span class="ml-2">Projects</span>
+      </a>
+
+      <a
         class="btn {currentPage === 'tokens'
           ? 'btn-primary'
           : 'btn-ghost'} btn-md no-translate rounded-none! border-0 px-4"
         href="/"
       >
-        Tokens
+        <CoinsIcon size={16} />
+        <span class="ml-2">Tokens</span>
       </a>
+
       <a
-        class="btn {currentPage === 'protocols'
-          ? 'btn-primary'
-          : 'btn-ghost'} btn-md no-translate rounded-none! border-0 px-4"
-        href="/protocols"
+        href="#"
+        class="btn btn-ghost btn-md no-translate rounded-none! border-0 px-4"
+        onclick={() => alert('Coming soon!')}
       >
-        Protocols
+        <NavigationIcon size={16} />
+        <span class="ml-2">Routing</span>
       </a>
     </div>
   </div>
@@ -47,8 +65,19 @@
     </h1>
     <div class="flex">
       <!-- Add your GitHub and Telegram buttons here -->
-      <a class="btn btn-ghost btn-sm" href="https://github.com/EnsoBuild/defi-navigator" aria-label="GitHub">
+      <a
+        class="btn btn-ghost btn-sm"
+        href="https://github.com/EnsoBuild/defi-navigator"
+        aria-label="GitHub"
+      >
         <GithubIcon size={16} />
+      </a>
+      <a
+        class="btn btn-ghost btn-sm"
+        href="https://github.com/EnsoBuild/defi-navigator/issues"
+        aria-label="GitHub"
+      >
+        <BugIcon size={16} />
       </a>
       <a class="btn btn-ghost btn-sm" href="https://t.me/enso_intent_engine" aria-label="Telegram">
         <svg
@@ -67,4 +96,3 @@
     </div>
   </div>
 </div>
-<!-- <button class="btn btn-secondary btn-md no-translate" on:click={share}> Share </button> -->

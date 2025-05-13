@@ -19,7 +19,8 @@ export enum FilterKey {
   PROJECT = 'project',
   TYPE = 'type',
   CHAIN_ID = 'chainId',
-  PRIMARY_ADDRESS = 'primaryAddress'
+  PRIMARY_ADDRESS = 'primaryAddress',
+  PROJECT_CHAIN_ID = 'projectChainId'
 }
 
 export type FilterValue = Address | string | { from: number; to: number };
@@ -54,3 +55,13 @@ export type FilterItem = {
 export type { TokenParams, Address };
 
 export type { TokenData, Network, Project, ProtocolData as Protocol } from '@ensofinance/sdk';
+
+// Project-specific types
+export interface ProjectData {
+  id: string;
+  name: string;
+  protocols: Protocol[];
+  chains: Network[];
+  logo?: string;
+}
+

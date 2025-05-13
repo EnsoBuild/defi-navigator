@@ -6,6 +6,7 @@ import {
   type Suggestion
 } from '$lib/types';
 import type { TokenParams, Network, Protocol, Project, Address } from '$lib/types';
+import { searchService } from '../searchService';
 
 /**
  * Unified FilterService that combines filterEngine and filterSuggestionService
@@ -45,9 +46,18 @@ export class FilterService {
 
   // Update data sources for suggestions
   updateDataSources(networks?: Network[], protocols?: Protocol[], projects?: Project[]) {
-    if (networks) this.networks = networks;
-    if (protocols) this.protocols = protocols;
-    if (projects) this.projects = projects;
+    if (networks) {
+      this.networks = networks;
+      searchService.initializeNetworkSearch(networks);
+    }
+    if (protocols) {
+      this.protocols = protocols;
+      searchService.initializeProtocolSearch(protocols);
+    }
+    if (projects) {
+      this.projects = projects;
+      searchService.initializeProjectSearch(projects);
+    }
   }
 
   // Parse a query string into TokenParams
@@ -308,53 +318,40 @@ export class FilterService {
     return this.filterDescriptions[key] || key;
   }
 
-  // Get suggestions for a specific filter key
+  // Get suggestions for a specific filter key - updated to use Fuse
   getSuggestionsForKey(key: FilterKey, searchValue: string = ''): Suggestion[] {
-    const searchLower = searchValue.toLowerCase();
-
     switch (key) {
       case FilterKey.PROTOCOL_SLUG:
-        return this.protocols
-          .filter(
-            (protocol) =>
-              protocol.slug?.toLowerCase().includes(searchLower) ||
-              protocol.name?.toLowerCase().includes(searchLower)
-          )
-          .map((protocol) => ({
-            value: protocol.slug,
-            displayText: protocol.name || protocol.slug,
-            description: protocol.description || '',
-            logo: protocol.logosUri && protocol.logosUri[0],
-            metadata: protocol
-          }));
+        const protocols = searchService.searchProtocols(searchValue);
+        return protocols.map((protocol) => ({
+          value: protocol.slug,
+          displayText: protocol.name || protocol.slug,
+          description: protocol.description || '',
+          logo: protocol.logosUri && protocol.logosUri[0],
+          metadata: protocol
+        }));
 
       case FilterKey.PROJECT:
-        return this.projects
-          .filter((project) => project.id.toLowerCase().includes(searchLower))
-          .map((project) => {
-            const relatedProtocol = this.protocols.find((p) => p.slug === project.id);
-            return {
-              value: project.id,
-              displayText: relatedProtocol?.name || project.id,
-              description: relatedProtocol?.description || '',
-              logo: relatedProtocol?.logosUri && relatedProtocol.logosUri[0],
-              metadata: { project, protocol: relatedProtocol }
-            };
-          });
+        const projects = searchService.searchProjects(searchValue);
+        return projects.map((project) => {
+          const relatedProtocol = this.protocols.find((p) => p.slug === project.id);
+          return {
+            value: project.id,
+            displayText: relatedProtocol?.name || project.id,
+            description: relatedProtocol?.description || '',
+            logo: relatedProtocol?.logosUri && relatedProtocol.logosUri[0],
+            metadata: { project, protocol: relatedProtocol }
+          };
+        });
 
       case FilterKey.CHAIN_ID:
-        return this.networks
-          .filter(
-            (network) =>
-              network.id.toString().includes(searchLower) ||
-              network.name?.toLowerCase().includes(searchLower)
-          )
-          .map((network) => ({
-            value: network.id.toString(),
-            displayText: `${network.name} (${network.id})`,
-            description: '',
-            metadata: network
-          }));
+        const networks = searchService.searchNetworks(searchValue);
+        return networks.map((network) => ({
+          value: network.id.toString(),
+          displayText: `${network.name} (${network.id})`,
+          description: '',
+          metadata: network
+        }));
 
       case FilterKey.TYPE:
         return [
@@ -366,7 +363,8 @@ export class FilterService {
           { value: 'base', displayText: 'Base Token', description: 'Basic underlying tokens' }
         ].filter(
           (item) =>
-            item.value.includes(searchLower) || item.displayText.toLowerCase().includes(searchLower)
+            item.value.includes(searchValue.toLowerCase()) || 
+            item.displayText.toLowerCase().includes(searchValue.toLowerCase())
         );
 
       default:
@@ -427,3 +425,4 @@ export class FilterService {
 
 // Export singleton instance
 export const filterService = new FilterService();
+

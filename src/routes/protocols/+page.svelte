@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Nav from '$lib/components/layout/Nav.svelte';
-  import ProtocolExplorer from '$lib/components/protocols/ProtocolExplorer.svelte';
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+
+  // Redirect to projects page
+  onMount(() => {
+    goto('/projects', { replaceState: true });
+  });
 </script>
 
-<section class="min-h-screen bg-bg-primary pb-2 px-8 mx-auto">
-  <div>
-    <div class="mb-4 flex justify-end justify-items-stretch gap-3">
-      <Nav />
-    </div>
-    <ProtocolExplorer />
-  </div>
-</section>
+<div class="min-h-screen bg-bg-primary flex items-center justify-center">
+  <p class="text-text-secondary">Redirecting to projects...</p>
+</div>

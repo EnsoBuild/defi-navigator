@@ -1,11 +1,9 @@
 <script lang="ts">
-
   import type { TokenData } from '$lib/types';
   import Card from '$lib/components/common/Card.svelte';
 
   import ChainBadge from '$lib/components/tokens/ChainBadge.svelte';
   import TokenLogo from '$lib/components/tokens/TokenLogo.svelte';
-
 
   interface Props {
     token: TokenData;
@@ -20,10 +18,11 @@
   }
 
   // Determine if APY should be highlighted
-  let hasHighAPY = $derived(token.apy !== null && token.apy !== undefined && token.apy > 5);
+  let hasHighAPY = $derived(token.apy !== null && token.apy !== undefined && Number(token.apy) > 5);
 
   // Format TVL with appropriate suffix (K, M, B)
-  function formatTVL(value: number): string {
+  function formatTVL(value: string | number): string {
+    value = Number(value);
     if (!value && value !== 0) return 'N/A';
     if (value >= 1000000000) {
       return `$${(value / 1000000000).toFixed(1)}B`;
@@ -75,7 +74,7 @@
           <span
             class={`font-semibold ${hasHighAPY ? 'from-primary to-primary-hover bg-gradient-to-r' : 'from-success bg-gradient-to-r to-green-400'} bg-clip-text text-transparent`}
           >
-            {token.apy.toFixed(2)}%
+            {Number(token.apy).toFixed(2)}%
           </span>
         {:else}
           <span class="text-text-tertiary">N/A</span>
