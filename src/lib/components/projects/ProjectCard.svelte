@@ -36,7 +36,7 @@
       <div class="flex flex-wrap gap-1">
         {#each project.protocols as protocol}
           <a
-            href="/?protocolSlug={protocol.slug}"
+            href="tokens/?protocolSlug={protocol.slug}"
             class="bg-bg-secondary text-text-tertiary hover:bg-bg-hover hover:text-text-primary cursor-pointer rounded-full px-2 py-1 text-xs transition-colors"
           >
             {protocol.name || protocol.slug}
@@ -52,7 +52,7 @@
       <div class="flex flex-wrap gap-1">
         {#each project.chains as chain}
           <a
-            href="/?chainId={chain.id}"
+            href="/tokens?chainId={chain.id}"
             class="bg-bg-secondary text-text-tertiary hover:bg-bg-hover hover:text-text-primary cursor-pointer rounded-full px-2 py-1 text-xs transition-colors"
           >
             {chain.name} ({chain.id})
@@ -66,7 +66,7 @@
   <div class="flex-grow"></div>
 
   <div class="flex flex-col gap-2">
-    <a href="/?project={project.id}" class="btn btn-primary btn-sm w-full text-center">
+    <a href="/tokens?project={project.id}" class="btn btn-primary btn-sm w-full text-center">
       View All Tokens
     </a>
   </div>
