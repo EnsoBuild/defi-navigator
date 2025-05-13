@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import type { ProjectData } from '$lib/types';
-  import { getProjectsData } from '$lib/services/api/tokens';
-  import { searchService } from '$lib/services/searchService';
   import Input from '$lib/components/common/Input.svelte';
-  import ProjectCard from './ProjectCard.svelte';
   import SkeletonLoader from '$lib/components/feedback/SkeletonLoader.svelte';
+  import { getNetworks, getProjectsData } from '$lib/services/api/tokens';
+  import { searchService } from '$lib/services/searchService';
+  import type { Network, ProjectData } from '$lib/types';
+  import { onMount } from 'svelte';
+  import ResultsStats from '../tokens/ResultsStats.svelte';
+  import ProjectCard from './ProjectCard.svelte';
 
   let projects: ProjectData[] = $state([]);
   let filteredProjects: ProjectData[] = $state([]);
@@ -13,7 +14,7 @@
   let error: string | null = $state(null);
   let searchQuery = $state('');
   let selectedChainId: number | null = $state(null);
-  let availableChains: { id: number; name: string }[] = $state([]);
+  let availableChains: Network[] = $state([]);
 
   onMount(async () => {
     try {
@@ -24,17 +25,7 @@
       // Initialize Fuse search for projects
       searchService.initializeProjectDataSearch(projects);
 
-      // Get all unique chains
-      const chainSet = new Set<string>();
-      projects.forEach((project) => {
-        project.chains.forEach((chain) => {
-          chainSet.add(JSON.stringify({ id: chain.id, name: chain.name }));
-        });
-      });
-
-      availableChains = Array.from(chainSet)
-        .map((str) => JSON.parse(str))
-        .sort((a, b) => a.name.localeCompare(b.name));
+      availableChains = await getNetworks();
 
       loading = false;
     } catch (err) {
@@ -139,11 +130,12 @@
   </div>
 {:else}
   <div class="mb-4">
-    <p class="text-text-secondary">
-      Showing {filteredProjects.length}
-      {filteredProjects.length === 1 ? 'project' : 'projects'}
-      {searchQuery || selectedChainId ? ' (filtered)' : ''}
-    </p>
+    <ResultsStats
+      totalCount={projects.length}
+      filteredCount={filteredProjects.length}
+      {searchQuery}
+      whats="projects"
+    />
   </div>
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     {#each filteredProjects as project}

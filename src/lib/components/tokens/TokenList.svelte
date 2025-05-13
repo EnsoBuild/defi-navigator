@@ -54,7 +54,7 @@
     on:action={handleClearFilters}
   />
 {:else if hasTokens}
-  <ResultsStats {totalCount} filteredCount={totalCount} />
+  <ResultsStats {totalCount} filteredCount={totalCount} whats="tokens"/>
 
   <div class="tokens-grid mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     {#each $tokens as token (token.address + token.chainId)}
