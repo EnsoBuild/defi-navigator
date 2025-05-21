@@ -34,6 +34,7 @@
     "@ensofinance/sdk": "^1.1.0-beta.1",
     "@lucide/svelte": "^0.503.0",
     "fuse.js": "^7.1.0",
+    "just-debounce-it": "^3.2.0",
     "lodash": "^4.17.21"
   }
 }
