@@ -23,7 +23,8 @@
     try {
       const parsedUrl = new URL(window.location.href);
       const urlChainId = parsedUrl.searchParams.get('chainId');
-      if (urlChainId) {
+      if (!!urlChainId) {
+        console.log(urlChainId);
         selectedChainId = urlChainId;
       }
 
@@ -69,10 +70,12 @@
     }
 
     filteredProjects = filtered;
-    goto(`/projects?&chainId=${selectedChainId}`, {
-      replaceState: true,
-      keepFocus: true
-    });
+    if (selectedChainId) {
+      goto(`/projects?&chainId=${selectedChainId}`, {
+        replaceState: true,
+        keepFocus: true
+      });
+    }
   }
 </script>
 
