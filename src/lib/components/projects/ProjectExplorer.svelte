@@ -21,15 +21,20 @@
 
   onMount(async () => {
     try {
-      const data = await getProjectsData();
-      projects = data;
-      filteredProjects = [...projects];
-
-      // Initialize Fuse search for projects
-      searchService.initializeProjectDataSearch(projects);
+      const parsedUrl = new URL(window.location.href);
+      const urlChainId = parsedUrl.searchParams.get('chainId');
+      if (urlChainId) {
+        selectedChainId = urlChainId;
+      }
 
       availableChains = await getNetworks();
 
+      const data = await getProjectsData();
+      projects = data;
+      filteredProjects = [...projects];
+      filterProjects();
+      // Initialize Fuse search for projects
+      searchService.initializeProjectDataSearch(projects);
       loading = false;
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load projects';
@@ -136,7 +141,7 @@
     <ResultsStats
       totalCount={projects.length}
       filteredCount={filteredProjects.length}
-      {searchQuery}
+      searchQuery={searchQuery + selectedChainId}
       whats="projects"
     />
   </div>

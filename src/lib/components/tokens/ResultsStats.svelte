@@ -12,9 +12,7 @@
 
 <div class="results-stats text-text-tertiary mb-4 flex items-center justify-between text-sm">
   {#if searchQuery && filteredCount !== null}
-    <span
-      >Showing <span class="text-text-primary font-medium">{filteredCount}</span> of {totalCount} {whats}</span
-    >
+    <span>Showing <span class="text-text-primary font-medium">{filteredCount}</span> projects</span>
   {:else}
     <span>Showing <span class="text-text-primary font-medium">{totalCount}</span> {whats}</span>
   {/if}
