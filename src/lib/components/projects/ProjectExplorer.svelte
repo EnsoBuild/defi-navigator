@@ -7,13 +7,16 @@
   import { onMount } from 'svelte';
   import ResultsStats from '../tokens/ResultsStats.svelte';
   import ProjectCard from './ProjectCard.svelte';
+  import { goto } from '$app/navigation';
+  import ChainSearch from './ChainSearch.svelte';
+  import debounce from 'just-debounce-it';
 
   let projects: ProjectData[] = $state([]);
   let filteredProjects: ProjectData[] = $state([]);
   let loading = $state(true);
   let error: string | null = $state(null);
   let searchQuery = $state('');
-  let selectedChainId: number | null = $state(null);
+  let selectedChainId: string | null = $state(null);
   let availableChains: Network[] = $state([]);
 
   onMount(async () => {
@@ -34,13 +37,13 @@
     }
   });
 
-  function handleSearch(e: Event) {
-    const target = e.target as HTMLInputElement;
-    searchQuery = target.value;
+  const handleSearch = debounce((e: Event) => {
+    searchQuery = (e.target as HTMLInputElement).value;
     filterProjects();
-  }
+  }, 300);
 
-  function handleChainFilter(chainId: number | null) {
+  function handleChainFilter(chainId: string | null) {
+    console.log('Selected chain ID:', chainId);
     selectedChainId = chainId;
     filterProjects();
   }
@@ -56,27 +59,27 @@
     // Apply chain filter
     if (selectedChainId !== null) {
       filtered = filtered.filter((project) =>
-        project.chains.some((chain) => chain.id === selectedChainId)
+        project.chains.some((chain) => chain.id?.toString() === selectedChainId)
       );
     }
 
     filteredProjects = filtered;
+    goto(`/projects?&chainId=${selectedChainId}`, {
+      replaceState: true,
+      keepFocus: true
+    });
   }
 </script>
 
 <div class="mb-6 flex items-center justify-between gap-4">
   <div class="flex items-center gap-4">
-    <div class="relative">
-      <select
-        class="form-input appearance-none pr-8"
-        onchange={(e) =>
-          handleChainFilter(e.currentTarget.value ? Number(e.currentTarget.value) : null)}
-      >
-        <option value="">All Chains</option>
-        {#each availableChains as chain}
-          <option value={chain.id}>{chain.name} ({chain.id})</option>
-        {/each}
-      </select>
+    <div class="w-64">
+      <ChainSearch
+        networks={availableChains}
+        bind:selectedChainId
+        placeholder="Search a chain"
+        on:select={(e: CustomEvent<{ chainId: string }>) => handleChainFilter(e.detail.chainId)}
+      />
       <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -139,7 +142,7 @@
   </div>
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     {#each filteredProjects as project}
-      <ProjectCard {project} />
+      <ProjectCard {project} chainId={selectedChainId} />
     {/each}
   </div>
 {/if}

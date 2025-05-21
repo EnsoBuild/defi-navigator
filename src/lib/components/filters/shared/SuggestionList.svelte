@@ -25,12 +25,12 @@
 
   // Handle suggestion selection
   function selectSuggestion(suggestion: Suggestion) {
-    console.log('Selected suggestion mouse:', suggestion);
     onSelect({ suggestion });
   }
 </script>
 
 <div
+  onwheel={(e) => e.stopPropagation()}
   class="suggestions-list scrollbar-thin flex-1 overflow-y-auto py-1"
   style={`max-height: ${maxHeight}`}
 >

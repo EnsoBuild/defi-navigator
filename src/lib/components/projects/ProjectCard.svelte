@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { ProjectData } from '$lib/types';
+  import { CoinsIcon } from '@lucide/svelte';
+  import Button from '../common/Button.svelte';
+  import { goto } from '$app/navigation';
 
-  const { project }: { project: ProjectData } = $props();
+  const { project, chainId }: { project: ProjectData; chainId: string | null } = $props();
 </script>
 
 <div class="card flex h-full flex-col p-6">
@@ -65,9 +68,23 @@
   <!-- Spacer to push buttons to bottom -->
   <div class="flex-grow"></div>
 
-  <div class="flex flex-col gap-2">
-    <a href="/tokens?project={project.id}" class="btn btn-primary btn-sm w-full text-center">
-      View All Tokens
-    </a>
+  <div class="flex flex-col">
+    <Button
+      onclick={() => goto(`/tokens?project=${project.id}${chainId ? `&chainId=${chainId}` : ''}`)}
+      variant="secondary"
+      size="md"
+    >
+      <CoinsIcon size={16} class="ml-1 inline" /> Tokens
+    </Button>
   </div>
+
+  <!-- TODO: add Standards button
+  <div class="flex">
+    <a
+      href="/tokens?project={project.id}{!!chainId ? `&chainId=${chainId}` : ''}"
+      class="btn btn-primary btn-sm text-center"
+    >
+      <CoinsIcon size={16} class="ml-1 inline" /> Tokens
+    </a>
+  </div> -->
 </div>
