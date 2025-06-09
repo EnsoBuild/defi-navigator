@@ -10,14 +10,13 @@
 <div
   class="bg-bg-secondary border-brdr-light fixed right-0 bottom-0 left-0 z-10 mx-auto flex w-full items-center justify-between border-t px-6 py-4 pb-5"
 >
-  {#if $isLoading || $loadingProgress > 0}
+  {#if true || $isLoading || loadingProgress.current > 0}
     <div
-      class="bg-primary shadow-primary/50 absolute top-0 left-0 h-[1px] py-[1px] transition-all duration-300 ease-out"
-      style="width: {$loadingProgress}%;"
-      transition:fade={{ duration: 300 }}
+      class="loader bg-primary shadow-primary/50 absolute top-0 left-0 h-[1px] py-[1px] transition-all duration-300 ease-out"
+      style="width: {loadingProgress.current}%;"
     ></div>
   {/if}
-  
+
   <div class="flex w-full items-center gap-3">
     <div class="flex-grow">
       <FilterSystem />
@@ -33,5 +32,3 @@
     </Button>
   </div>
 </div>
-
-

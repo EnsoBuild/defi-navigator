@@ -1,5 +1,10 @@
-import { FilterKey, type FilterOperator, type ParserCallbacks } from '$lib/types';
-import { type Address, type TokenParams } from '../types/api';
+import {
+  FilterKey,
+  type Address,
+  type FilterOperator,
+  type ParserCallbacks,
+  type TokenParams
+} from '$lib/types';
 
 // Constants
 const INEQUALITY_SUPPORTED_KEYS = new Set([FilterKey.APY, FilterKey.TVL]);

@@ -29,6 +29,11 @@
       onReturn();
     }
   };
+
+  function focusOnMount(node: HTMLInputElement) {
+    node.focus();
+  }
+  
 </script>
 
 <div class="range-input">
@@ -37,6 +42,7 @@
   <div class="flex items-center gap-2">
     <div class="flex-1">
       <input
+        use:focusOnMount
         type="number"
         bind:value={fromValue}
         placeholder={fromPlaceholder}

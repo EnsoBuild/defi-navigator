@@ -36,8 +36,15 @@
   }
 
   // Handle suggestion select
-  function handleSuggestionSelect(event: CustomEvent<{ value: string }>) {
+  function handleSuggestionSelectEvent(event: CustomEvent<{ value: string }>) {
+    console.log(event);
     value = event.detail.value;
+    handleSuggestionSelect(value);
+  }
+
+    // Handle suggestion select
+  function handleSuggestionSelect(val: string) {
+    value = val
     showSuggestions = false;
     dispatch('add');
   }
@@ -99,7 +106,7 @@
           if (filterValueSelected) {
             value = filterValueSelected;
             filterValueSelected = '';
-            addFilter();
+            handleSuggestionSelect(value)
           }
         }
       }
@@ -135,7 +142,7 @@
           value={value as string}
           placeholder={`Enter ${getFilterKeyDescription(filterKey)}...`}
           on:input={handleInputChange}
-          onReturn={handleSuggestionSelect}
+          onReturn={handleSuggestionSelectEvent}
         />
       </div>
 
@@ -143,8 +150,10 @@
         <div class="bottom-full mb-1 w-full">
           <FilterSuggestions
             {suggestions}
-            on:select={handleSuggestionSelect}
+            on:select={handleSuggestionSelectEvent}
             on:update={handleSuggestionUpdate}
+            onDismiss={() => {}}
+            searchValue=""
           />
         </div>
       {/if}

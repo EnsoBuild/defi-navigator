@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  
   interface Props {
     // Props
     value?: string;
@@ -10,12 +9,7 @@
     onReturn: (e: CustomEvent<{ value: string }>) => void;
   }
 
-  let {
-    value = '',
-    placeholder = 'Enter value...',
-    type = 'text',
-    onReturn
-  }: Props = $props();
+  let { value = '', placeholder = 'Enter value...', type = 'text', onReturn }: Props = $props();
 
   // Event dispatcher
   const dispatch = createEventDispatcher();
@@ -24,15 +18,25 @@
   function handleInput(event: any) {
     dispatch('input', { value: event.target.value });
   }
-  
+
   // Handle keydown events
   function onkeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      onReturn(new CustomEvent(value));
+      onReturn(new CustomEvent('any', { detail: { value } }));
     }
+  }
+
+  function focusOnMount(node: HTMLInputElement) {
+    node.focus();
   }
 </script>
 
-<input {type} {value} oninput={handleInput} class="form-input w-full" {onkeydown} {placeholder} />
-
-
+<input
+  {type}
+  {value}
+  oninput={handleInput}
+  class="form-input w-full"
+  {onkeydown}
+  {placeholder}
+  use:focusOnMount
+/>

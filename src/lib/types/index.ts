@@ -20,7 +20,9 @@ export enum FilterKey {
   TYPE = 'type',
   CHAIN_ID = 'chainId',
   PRIMARY_ADDRESS = 'primaryAddress',
-  PROJECT_CHAIN_ID = 'projectChainId'
+  PROJECT_CHAIN_ID = 'projectChainId',
+  TOKEN_SYMBOL = 'symbol',
+  TOKEN_NAME = 'name'
 }
 
 export type FilterValue = Address | string | { from: number; to: number };
@@ -64,4 +66,3 @@ export interface ProjectData {
   chains: Network[];
   logo?: string;
 }
-

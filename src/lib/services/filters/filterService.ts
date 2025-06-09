@@ -25,12 +25,16 @@ export class FilterService {
     FilterKey.ADDRESS,
     FilterKey.UNDERLYING_TOKENS,
     FilterKey.UNDERLYING_TOKENS_EXACT,
-    FilterKey.PRIMARY_ADDRESS
+    FilterKey.PRIMARY_ADDRESS,
+    FilterKey.TOKEN_NAME,
+    FilterKey.TOKEN_SYMBOL
   ]);
 
   // Filter descriptions for UI
   private filterDescriptions: Record<string, string> = {
-    [FilterKey.ADDRESS]: 'Token address',
+    [FilterKey.ADDRESS]: 'Position address',
+    [FilterKey.TOKEN_SYMBOL]: 'Position Symbol',
+    [FilterKey.TOKEN_NAME]: 'Position Name',
     [FilterKey.UNDERLYING_TOKENS]: 'Underlying token address',
     [FilterKey.UNDERLYING_TOKENS_EXACT]: 'Exact underlying token address',
     [FilterKey.APY_FROM]: 'Minimum annual percentage yield',
@@ -363,7 +367,7 @@ export class FilterService {
           { value: 'base', displayText: 'Base Token', description: 'Basic underlying tokens' }
         ].filter(
           (item) =>
-            item.value.includes(searchValue.toLowerCase()) || 
+            item.value.includes(searchValue.toLowerCase()) ||
             item.displayText.toLowerCase().includes(searchValue.toLowerCase())
         );
 
@@ -425,4 +429,3 @@ export class FilterService {
 
 // Export singleton instance
 export const filterService = new FilterService();
-
