@@ -20,7 +20,6 @@
 
 <div class="flex w-full items-center gap-3">
   <div class="flex items-center gap-2">
-    <ShareFiltersButton tokenParams={$filterParams} />
     <ModeSwitchButton current="ui" {onSwitch} />
   </div>
 

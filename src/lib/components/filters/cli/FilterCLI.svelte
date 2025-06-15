@@ -245,7 +245,6 @@
 <div class="token-search relative flex-1">
   <div class="search-input-wrapper relative">
     <div class="inset-0 flex items-end gap-2">
-      <ShareFiltersButton tokenParams={$filterParams} moreRoom={true} />
       <ModeSwitchButton current="cli" {onSwitch} />
 
       <div class="relative w-full">

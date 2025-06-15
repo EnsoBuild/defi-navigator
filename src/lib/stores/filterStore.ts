@@ -77,7 +77,7 @@ export function clearFilters() {
 export function executeSearch() {
   const fp = get(filterParams);
   loadTokens(fp).then(() =>
-    goto(createShareableUrl(fp), {
+    goto(createShareableUrl(fp, window.location.origin + '/tokens'), {
       replaceState: true,
       keepFocus: true
     })
