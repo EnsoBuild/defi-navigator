@@ -1,7 +1,15 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { BugIcon, CoinsIcon, GithubIcon, NavigationIcon, ToyBrickIcon } from '@lucide/svelte';
+  import {
+  BookOpenIcon,
+    BookUp2Icon,
+    BugIcon,
+    CoinsIcon,
+    GithubIcon,
+    NavigationIcon,
+    ToyBrickIcon
+  } from '@lucide/svelte';
   import { onMount } from 'svelte';
 
   let currentPage = $state('projects');
@@ -49,9 +57,9 @@
       </a>
 
       <a
-        href="#"
+        href="https://happypath.enso.build"
+        target="blank"
         class="btn btn-ghost btn-md no-translate rounded-none! border-0 px-4"
-        onclick={() => alert('Coming soon!')}
       >
         <NavigationIcon size={16} />
         <span class="ml-2">Routing</span>
@@ -72,6 +80,7 @@
       <a
         class="btn btn-ghost btn-sm"
         href="https://github.com/EnsoBuild/defi-navigator"
+        target="_blank"
         aria-label="GitHub"
       >
         <GithubIcon size={16} />
@@ -79,9 +88,18 @@
       <a
         class="btn btn-ghost btn-sm"
         href="https://github.com/EnsoBuild/defi-navigator/issues"
-        aria-label="GitHub"
+        target="_blank"
+        aria-label="GitHub Issues"
       >
         <BugIcon size={16} />
+      </a>
+      <a
+        class="btn btn-ghost btn-sm"
+        href="https://docs.enso.build"
+        target="_blank"
+        aria-label="Docs"
+      >
+        <BookOpenIcon size={16} />
       </a>
       <a class="btn btn-ghost btn-sm" href="https://t.me/enso_intent_engine" aria-label="Telegram">
         <svg
