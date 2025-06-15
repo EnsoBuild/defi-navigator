@@ -2,6 +2,8 @@ import { filterService } from '$lib/services/filters/filterService';
 import type { FilterKey, FilterValue, TokenParams } from '$lib/types';
 import { derived, get, writable } from 'svelte/store';
 import { loadTokens } from './tokenStore';
+import { goto } from '$app/navigation';
+import { createShareableUrl } from '$lib/utils/url';
 
 // Core state
 export const filterParams = writable<TokenParams>({});
@@ -73,5 +75,11 @@ export function clearFilters() {
 }
 
 export function executeSearch() {
-  loadTokens(get(filterParams));
+  const fp = get(filterParams);
+  loadTokens(fp).then(() =>
+    goto(createShareableUrl(fp), {
+      replaceState: true,
+      keepFocus: true
+    })
+  );
 }

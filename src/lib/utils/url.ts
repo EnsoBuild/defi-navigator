@@ -1,5 +1,6 @@
 // createShareableUrl.ts
-import type { TokenParams, MultiAddress } from '../types/api';
+
+import type { Address, TokenParams } from "@ensofinance/sdk";
 
 /**
  * Creates a shareable URL that encodes TokenParams as query parameters
@@ -7,9 +8,9 @@ import type { TokenParams, MultiAddress } from '../types/api';
  * @param baseUrl Base URL to which parameters will be appended
  * @returns Shareable URL string
  */
-export function createShareableUrl(params: TokenParams, baseUrl = window.location.origin): string {
+export function createShareableUrl(params: TokenParams, baseUrl = window.location.href): string {
   const searchParams = new URLSearchParams();
-  console.debug(params)
+  console.log(params, baseUrl)
   // Process each property in TokenParams
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined) {
@@ -43,20 +44,20 @@ export function parseShareableUrl(url: string): TokenParams {
   const params: TokenParams = {};
   const parsedUrl = new URL(url);
   const searchParams = parsedUrl.searchParams;
-  console.debug('Parsed URL:', parsedUrl);
+  console.log('Parsed URL:', parsedUrl);
 
   // Handle array parameters
   const addressValues = searchParams.getAll('address[]');
-  if (addressValues.length) params.address = addressValues as MultiAddress;
+  if (addressValues.length) params.address = addressValues as Address[];
   
   const underlyingTokensValues = searchParams.getAll('underlyingTokens[]');
-  if (underlyingTokensValues.length) params.underlyingTokens = underlyingTokensValues as MultiAddress;
+  if (underlyingTokensValues.length) params.underlyingTokens = underlyingTokensValues as Address[];
   
   const underlyingTokensExactValues = searchParams.getAll('underlyingTokensExact[]');
-  if (underlyingTokensExactValues.length) params.underlyingTokensExact = underlyingTokensExactValues as MultiAddress;
+  if (underlyingTokensExactValues.length) params.underlyingTokensExact = underlyingTokensExactValues as Address[];
 
   const primaryAddress = searchParams.getAll('primaryAddress[]');
-  if (primaryAddress.length) params.primaryAddress = underlyingTokensExactValues as MultiAddress;
+  if (primaryAddress.length) params.primaryAddress = underlyingTokensExactValues as Address[];
   
   // Handle primitive types
   if (searchParams.has('apyFrom')) params.apyFrom = Number(searchParams.get('apyFrom'));
@@ -70,6 +71,8 @@ export function parseShareableUrl(url: string): TokenParams {
   if (searchParams.has('type')) params.type = searchParams.get('type') as "defi" | "base";
   if (searchParams.has('includeMetadata')) params.includeMetadata = searchParams.get('includeMetadata') === 'true';
   if (searchParams.has('chainId')) params.chainId = Number(searchParams.get('chainId'));
+  if (searchParams.has('tokenName')) params.chainId = Number(searchParams.get('tokenName'));
+  if (searchParams.has('tokenSymbol')) params.chainId = Number(searchParams.get('tokenSymbol'));
   
   return params;
 }

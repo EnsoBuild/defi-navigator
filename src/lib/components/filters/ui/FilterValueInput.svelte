@@ -42,9 +42,9 @@
     handleSuggestionSelect(value);
   }
 
-    // Handle suggestion select
+  // Handle suggestion select
   function handleSuggestionSelect(val: string) {
-    value = val
+    value = val;
     showSuggestions = false;
     dispatch('add');
   }
@@ -106,7 +106,7 @@
           if (filterValueSelected) {
             value = filterValueSelected;
             filterValueSelected = '';
-            handleSuggestionSelect(value)
+            handleSuggestionSelect(value);
           }
         }
       }
@@ -142,7 +142,7 @@
           value={value as string}
           placeholder={`Enter ${getFilterKeyDescription(filterKey)}...`}
           on:input={handleInputChange}
-          onReturn={handleSuggestionSelectEvent}
+          onReturn={(e) => {!showSuggestions && handleSuggestionSelectEvent(e)}}
         />
       </div>
 

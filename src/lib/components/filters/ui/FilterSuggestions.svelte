@@ -64,6 +64,7 @@
         preventDefault: true,
         stopPropagation: true,
         callback: () => {
+          console.log("FilterSuggestions", selectedIndex);
           if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
             selectSuggestion(suggestions[selectedIndex]);
           } else {
