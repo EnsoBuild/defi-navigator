@@ -23,9 +23,12 @@
     try {
       const parsedUrl = new URL(window.location.href);
       const urlChainId = parsedUrl.searchParams.get('chainId');
+      const protocol = parsedUrl.searchParams.get('protocol');
       if (!!urlChainId) {
-        console.log(urlChainId);
         selectedChainId = urlChainId;
+      }
+      if (!!protocol) {
+        searchQuery = protocol;
       }
 
       availableChains = await getNetworks();
@@ -33,9 +36,9 @@
       const data = await getProjectsData();
       projects = data;
       filteredProjects = [...projects];
-      filterProjects();
       // Initialize Fuse search for projects
       searchService.initializeProjectDataSearch(projects);
+      filterProjects();
       loading = false;
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load projects';

@@ -38,7 +38,7 @@ class SearchService {
   initializeProjectDataSearch(projects: ProjectData[]) {
     const options = {
       includeScore: true,
-      threshold: 0.3,
+      threshold: 0.1,
       keys: [
         'name',
         'protocols.name',
