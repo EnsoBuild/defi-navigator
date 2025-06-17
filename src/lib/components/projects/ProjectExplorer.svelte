@@ -70,8 +70,14 @@
     }
 
     filteredProjects = filtered;
-    if (selectedChainId) {
-      goto(`/projects?&chainId=${selectedChainId}`, {
+    const q = searchQuery.trim();
+    if (selectedChainId || q) {
+      const params = [];
+
+      if (selectedChainId) params.push(`chainId=${selectedChainId}`);
+      if (q) params.push(`protocol=${q}`);
+
+      goto(`/projects?${params.join('&')}`, {
         replaceState: true,
         keepFocus: true
       });
