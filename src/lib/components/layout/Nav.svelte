@@ -101,7 +101,7 @@
       >
         <BookOpenIcon size={16} />
       </a>
-      <a class="btn btn-ghost btn-sm" href="https://t.me/enso_intent_engine" aria-label="Telegram">
+      <a class="btn btn-ghost btn-sm" href="https://t.me/enso_shortcuts" aria-label="Telegram">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

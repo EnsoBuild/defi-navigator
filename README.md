@@ -101,7 +101,7 @@ Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTIN
 
 ## 📞 Support
 
-- [Telegram Community](https://t.me/enso_intent_engine)
+- [Telegram Community](https://t.me/enso_shortcuts)
 - [GitHub Issues](https://github.com/EnsoBuild/defi-navigator/issues)
 - [Documentation](https://docs.enso.finance/)
 
