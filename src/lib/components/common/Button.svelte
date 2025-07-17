@@ -2,9 +2,9 @@
   import { createBubbler } from 'svelte/legacy';
 
   const bubble = createBubbler();
-  import type { Component } from "@lucide/svelte";
+  import type { Component } from '@lucide/svelte';
+  import type FileJson_2 from '@lucide/svelte/icons/file-json-2';
 
-  
   interface Props {
     variant?: 'primary' | 'secondary' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
@@ -12,9 +12,9 @@
     fullWidth?: boolean;
     icon?: string | null;
     iconPosition?: 'left' | 'right';
-    Icon?: Component; // Placeholder for icon component
+    Icon?: any; // Placeholder for icon component
     children?: import('svelte').Snippet;
-    [key: string]: any
+    [key: string]: any;
   }
 
   let {
@@ -23,7 +23,7 @@
     fullWidth = false,
     icon = null,
     iconPosition = 'left',
-    Icon = null,
+    Icon,
     children,
     ...rest
   }: Props = $props();
@@ -66,7 +66,13 @@
     </span>
   {/if}
 
-  {@render children?.()}
+  {#if Icon && iconPosition === 'left'}
+    <Icon />
+  {/if}
+
+  <div class="pl-1">
+    {@render children?.()}
+  </div>
 
   {#if icon && iconPosition === 'right'}
     <span class="ml-2">
@@ -96,5 +102,8 @@
         {/if}
       </svg>
     </span>
+  {/if}
+  {#if Icon && iconPosition === 'right'}
+    <Icon />
   {/if}
 </div>

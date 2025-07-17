@@ -8,6 +8,17 @@
   import ChainBadge from '$lib/components/tokens/ChainBadge.svelte';
   import UnderlyingTokenItem from '$lib/components/tokens/UnderlyingTokenItem.svelte';
   import { clearSelectedToken, selectToken } from '$lib/stores/tokenStore';
+  import Button from '../common/Button.svelte';
+  import {
+    AppWindowMacIcon,
+    ArrowLeft,
+    ArrowRight,
+    Code2Icon,
+    CodeIcon,
+    FileJson,
+    FileJson2
+  } from '@lucide/svelte';
+  import FileJson_2 from '@lucide/svelte/icons/file-json-2';
 
   interface Props {
     token: TokenData;
@@ -16,6 +27,16 @@
 
   let { token }: Props = $props();
   const showOverlay = $derived(selectToken != null);
+
+  let tokenReference = $derived({
+    address: token.address,
+    name: token.name,
+    symbol: token.symbol,
+    decimals: token.decimals,
+    primary: token.primaryAddress,
+    underlyingTokens: token.underlyingTokens,
+    protocol: token.protocolSlug
+  });
 
   // Format TVL with appropriate suffix (K, M, B)
   function formatTVL(value: number): string {
@@ -32,6 +53,71 @@
 
   function handleClose() {
     clearSelectedToken();
+  }
+
+  function happyPath(dir: 'to' | 'from') {
+    window.open(route(dir, 'happypath'), '_blank');
+  }
+
+  function routeSdk(dir: 'to' | 'from') {
+    navigator.clipboard.writeText(route(dir, 'sdk'));
+    
+  }
+
+  function route(dir: 'to' | 'from', type: 'sdk' | 'happypath') {
+    const tokenIn = dir === 'from' ? token.address : '';
+    const tokenOut = dir === 'to' ? token.address : '';
+
+    const chainIdFrom = token.chainId.toString();
+    const chainIdTo = chainIdFrom;
+
+    if (type == 'happypath') {
+      return 'https://happypath.enso.build/?tokenIn=$TOKEN_IN&tokenOut=$TOKEN_OUT&outChainId=$TO_CHAIN_ID&chainId=$FROM_CHAIN_ID'
+        .replaceAll('$TOKEN_IN', tokenIn)
+        .replaceAll('$TOKEN_OUT', tokenOut)
+        .replaceAll('$FROM_CHAIN_ID', chainIdFrom)
+        .replaceAll('$TO_CHAIN_ID', chainIdTo);
+    } else {
+      return `import * as dotenv from "dotenv";
+import { signEOA, signSmartWallet } from "./tools";
+import { EnsoClient, RouteData } from "@ensofinance/sdk";
+
+dotenv.config();
+const EAK = process.env.ENSO_API_KEY!;
+const ensoClient = new EnsoClient({ apiKey: EAK });
+
+const tokenIn = "$TOKEN_IN"
+const tokenOut = "$TOKEN_OUT";
+const amountIn = "100000000";
+
+const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
+
+(async function main() {
+  const route: RouteData = await ensoClient.getRouteData({
+    chainId: $FROM_CHAIN_ID,
+    outChainId: $TO_CHAIN_ID,
+    amountIn: [amountIn],
+    fromAddress,
+    tokenIn: [tokenIn],
+    tokenOut: [tokenOut],
+    routingStrategy: 'router',
+    receiver: fromAddress,
+    slippage: "500"
+  })
+
+  console.log(JSON.stringify(route, null, 2));
+
+  await signEOA(route!.tx);
+})();`
+        .replaceAll('$TOKEN_IN', tokenIn)
+        .replaceAll('$TOKEN_OUT', tokenOut)
+        .replaceAll('$FROM_CHAIN_ID', chainIdFrom)
+        .replaceAll('$TO_CHAIN_ID', chainIdTo);
+    }
+  }
+
+  function copyRef() {
+    navigator.clipboard.writeText(JSON.stringify(tokenReference, null, 2));
   }
 </script>
 
@@ -80,6 +166,25 @@
     </div>
   {/snippet}
 
+  {#snippet footer()}
+    <Button variant="secondary" on:click={close}>Close</Button>
+    <div>
+      <Button
+        variant="ghost"
+        on:click={copyRef}
+        Icon={FileJson}
+        title={JSON.stringify(tokenReference, null, 2)}>Info</Button
+      >
+      <Button variant="ghost" on:click={() => happyPath('from')} Icon={AppWindowMacIcon}
+        >Route From</Button
+      >
+      <Button variant="ghost" on:click={() => happyPath('to')} Icon={AppWindowMacIcon}
+        >Route To</Button
+      >
+      <Button variant="ghost" on:click={() => routeSdk('from')} Icon={CodeIcon}>SDK From</Button>
+      <Button variant="ghost" on:click={() => routeSdk('to')} Icon={CodeIcon}>SDK To</Button>
+    </div>
+  {/snippet}
   <div class="modal-content">
     {#if token.project && token.protocolSlug}
       <div class="mb-5">

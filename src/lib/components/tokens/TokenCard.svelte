@@ -91,14 +91,4 @@
       </div>
     {/if}
   </div>
-
-  <!-- Protocol row -->
-  <!-- <div class="mt-2 flex items-center justify-between text-xs">
-    {#if token.project}
-      <span class="text-text-tertiary">{token.project} {!!token.protocolSlug ? `(${token.protocolSlug})`: ''}</span>
-    {:else}
-      
-    {/if}
-    <span class="text-text-tertiary">{token.type}</span>
-  </div> -->
 </Card>
