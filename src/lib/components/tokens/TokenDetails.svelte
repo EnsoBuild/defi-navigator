@@ -61,7 +61,6 @@
 
   function routeSdk(dir: 'to' | 'from') {
     navigator.clipboard.writeText(route(dir, 'sdk'));
-    
   }
 
   function route(dir: 'to' | 'from', type: 'sdk' | 'happypath') {
@@ -86,29 +85,42 @@ dotenv.config();
 const EAK = process.env.ENSO_API_KEY!;
 const ensoClient = new EnsoClient({ apiKey: EAK });
 
-const tokenIn = "$TOKEN_IN"
+const tokenIn = "$TOKEN_ID";
 const tokenOut = "$TOKEN_OUT";
 const amountIn = "100000000";
+const chainId = $CHAIN_ID;
 
 const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 
 (async function main() {
   const route: RouteData = await ensoClient.getRouteData({
-    chainId: $FROM_CHAIN_ID,
-    outChainId: $TO_CHAIN_ID,
+    chainId,
+    destinationChainId: chainId,
     amountIn: [amountIn],
     fromAddress,
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
-    routingStrategy: 'router',
+    routingStrategy: "router",
     receiver: fromAddress,
-    slippage: "500"
-  })
+    slippage: "500",
+  });
 
   console.log(JSON.stringify(route, null, 2));
 
+  // approval transaction for \`router\` strategy
+  // see https://docs.enso.build/pages/build/reference/routing-strategies
+  await signEOA(
+    ensoClient.getApprovalData({
+      chainId,
+      fromAddress,
+      amount: amountIn,
+      tokenAddress: tokenIn,
+    })
+  );
+  // sending the actual transaction
   await signEOA(route!.tx);
-})();`
+})();
+`
         .replaceAll('$TOKEN_IN', tokenIn)
         .replaceAll('$TOKEN_OUT', tokenOut)
         .replaceAll('$FROM_CHAIN_ID', chainIdFrom)
@@ -117,7 +129,8 @@ const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
   }
 
   function copyRef() {
-    navigator.clipboard.writeText(JSON.stringify(tokenReference, null, 2));
+    const jsonData = JSON.stringify(tokenReference, null, 2);
+    navigator.clipboard.writeText(jsonData);
   }
 </script>
 
@@ -167,7 +180,6 @@ const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
   {/snippet}
 
   {#snippet footer()}
-    <Button variant="secondary" on:click={close}>Close</Button>
     <div>
       <Button
         variant="ghost"
@@ -175,14 +187,15 @@ const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
         Icon={FileJson}
         title={JSON.stringify(tokenReference, null, 2)}>Info</Button
       >
-      <Button variant="ghost" on:click={() => happyPath('from')} Icon={AppWindowMacIcon}
-        >Route From</Button
-      >
-      <Button variant="ghost" on:click={() => happyPath('to')} Icon={AppWindowMacIcon}
-        >Route To</Button
-      >
       <Button variant="ghost" on:click={() => routeSdk('from')} Icon={CodeIcon}>SDK From</Button>
       <Button variant="ghost" on:click={() => routeSdk('to')} Icon={CodeIcon}>SDK To</Button>
+      
+      <Button variant="ghost" on:click={() => happyPath('from')} Icon={AppWindowMacIcon}
+        >Happypath From</Button
+      >
+      <Button variant="ghost" on:click={() => happyPath('to')} Icon={AppWindowMacIcon}
+        >Happypath To</Button
+      >
     </div>
   {/snippet}
   <div class="modal-content">

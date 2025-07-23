@@ -55,7 +55,7 @@
       <div class="flex flex-wrap gap-1">
         {#each project.chains as chain}
           <a
-            href="/tokens?chainId={chain.id}"
+            href="/tokens?project={project.id}&chainId={chain.id}"
             class="bg-bg-secondary text-text-tertiary hover:bg-bg-hover hover:text-text-primary cursor-pointer rounded-full px-2 py-1 text-xs transition-colors"
           >
             {chain.name} ({chain.id})

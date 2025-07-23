@@ -17,16 +17,16 @@
       description: 'Find token by address'
     },
     {
-      query: 'chain:1 underlying:0x4C612E3B15b96Ff9A6faED838F8d07d479a8dD4c',
+      query: 'chain:1 underlyingTokens:0x4C612E3B15b96Ff9A6faED838F8d07d479a8dD4c',
       description: 'Find tokens containing specific underlying token on Ethereum'
     },
     {
       query:
-        'chain:1 underlying:0x4C612E3B15b96Ff9A6faED838F8d07d479a8dD4c underlying:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        'chain:1 underlyingTokens:0x4C612E3B15b96Ff9A6faED838F8d07d479a8dD4c underlyingTokens:0x6B175474E89094C44Da98b954EedeAC495271d0F',
       description: 'Find tokens containing any of several specific underlying token on Ethereum'
     },
-    { query: 'apy&gt;10 apy&lt;20', description: 'Find tokens with APY between 10% and 20%' },
-    { query: 'tvl&gt;1000000', description: 'Find tokens with TVL greater than $1M' },
+    { query: 'apy>10 apy>20', description: 'Find tokens with APY between 10% and 20%' },
+    { query: 'tvl>1000000', description: 'Find tokens with TVL greater than $1M' },
     { query: 'protocol:aave type:defi', description: 'Find Aave DeFi tokens' }
   ];
 
@@ -106,7 +106,7 @@
                     >{FilterKey.UNDERLYING_TOKENS}</td
                   >
                   <td class="text-text-secondary px-4 py-2 text-sm">Underlying token</td>
-                  <td class="text-text-secondary px-4 py-2 text-sm">underlying:0x456...</td>
+                  <td class="text-text-secondary px-4 py-2 text-sm">underlyingTokens:0x456...</td>
                 </tr>
                 <tr>
                   <td class="text-primary px-4 py-2 font-mono text-sm">{FilterKey.APY_FROM}</td>
