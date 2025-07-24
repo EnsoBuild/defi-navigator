@@ -82,13 +82,14 @@ import { signEOA, signSmartWallet } from "./tools";
 import { EnsoClient, RouteData } from "@ensofinance/sdk";
 
 dotenv.config();
-const EAK = process.env.ENSO_API_KEY!;
-const ensoClient = new EnsoClient({ apiKey: EAK });
+const ENSO_API_KEY = process.env.ENSO_API_KEY!;
+const ensoClient = new EnsoClient({ apiKey: ENSO_API_KEY });
 
-const tokenIn = "$TOKEN_ID";
+const tokenIn = "$TOKEN_IN";
 const tokenOut = "$TOKEN_OUT";
 const amountIn = "100000000";
-const chainId = $CHAIN_ID;
+const chainId = $FROM_CHAIN_ID;
+const destinationChainid = $TO_CHAIN_ID;
 
 const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 
@@ -152,6 +153,13 @@ const fromAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 
         <!-- Metrics Pills -->
         <div class="mt-2 flex gap-3">
+          <div class="flex items-center gap-1.5">
+              <div
+                class="rounded-full px-2.5 py-1 text-sm font-medium text-white"
+              >
+                #.{token.decimals}
+              </div>
+            </div>
           {#if token.apy !== null && token.apy !== undefined}
             <div class="flex items-center gap-1.5">
               <div
